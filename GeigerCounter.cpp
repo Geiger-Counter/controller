@@ -5,10 +5,10 @@ unsigned int GeigerCounter::cpm = 0;
 unsigned int GeigerCounter::multiplier = 0;
 unsigned long GeigerCounter::previous_ms = 0;
 
-void GeigerCounter::setup(int GEIGER_PIN) {
+void GeigerCounter::setup(int GEIGER_PIN, ControllerType type) {
 
-    GEIGER_PIN = GEIGER_PIN;
     multiplier = GC_MAX_PERIOD / GC_LOG_PERIOD;
+    type = type;
 
     attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
 }

@@ -7,25 +7,32 @@
 #define GC_LOG_PERIOD 15000
 #define GC_MAX_PERIOD 60000
 
-    class GeigerCounter {
+enum ControllerType {
+    ARDUINO_CONTROLLER,
+    ESP32_CONTROLLER,
+    ESP8266_CONTROLLER
+};
 
-    private:
+class GeigerCounter {
 
-        static int GEIGER_PIN;
-        static unsigned int count;
-        static unsigned int cpm;
-        static unsigned int multiplier;
-        static unsigned long previous_ms;
+public:
 
-        static void impulse();
+    static float get_microsievert();
+    static unsigned int get_counts_per_minute();
+    static void setup(int GEIGER_PIN, ControllerType type);
+    static void loop();
 
-    public:
+private:
 
-        static float get_microsievert();
-        static unsigned int get_counts_per_minute();
-        static void setup(int GEIGER_PIN);
-        static void loop();
+    static ControllerType type;
+    static unsigned int count;
+    static unsigned int cpm;
+    static unsigned int multiplier;
+    static unsigned long previous_ms;
 
-    };
+    static void impulse();
+
+
+};
 
 #endif

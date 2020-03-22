@@ -1,0 +1,25 @@
+##########################################
+# Syntax Coloring Map for GeigerCounter
+##########################################
+
+##########################################
+# Datatypes (KEYWORD1)
+##########################################
+
+GeigerCounter   KEYWORD1        GeigerCounter
+GCButton        KEYWORD1        GCButton
+PowerButton     KEYWORD1        PowerButton
+LED             KEYWORD1        LED
+
+##########################################
+# Methods and functions (KEYWORD2)
+##########################################
+
+get_microsievert    KEYWORD2
+get_counts_per_minute   KEYWORD2
+setup   KEYWORD2
+loop    KEYWORD2
+on      KEYWORD2
+off     KEYWORD2
+toggle  KEYWORD2
+is_on   KEYWORD2
