@@ -4,13 +4,15 @@ unsigned int GeigerCounter::count = 0;
 unsigned int GeigerCounter::cpm = 0;
 unsigned int GeigerCounter::multiplier = 0;
 unsigned long GeigerCounter::previous_ms = 0;
+BluetoothServer* GeigerCounter::bluetoothServer = nullptr;
 
-void GeigerCounter::setup(int GEIGER_PIN, ControllerType type) {
+void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server) {
 
     multiplier = GC_MAX_PERIOD / GC_LOG_PERIOD;
-    type = type;
+    bluetoothServer = server;
 
     attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
+
 }
 
 void GeigerCounter::loop() {
@@ -28,7 +30,9 @@ void GeigerCounter::loop() {
 }
 
 void GeigerCounter::impulse() {
+    Serial.println("Impulse");
     count++;
+    bluetoothServer->impulse();
 }
 
 unsigned int GeigerCounter::get_counts_per_minute() {

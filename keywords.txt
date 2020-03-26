@@ -6,20 +6,28 @@
 # Datatypes (KEYWORD1)
 ##########################################
 
-GeigerCounter   KEYWORD1        GeigerCounter
-GCButton        KEYWORD1        GCButton
-PowerButton     KEYWORD1        PowerButton
-LED             KEYWORD1        LED
+GeigerCounter       KEYWORD1        GeigerCounter
+GCButton            KEYWORD1        GCButton
+PowerButton         KEYWORD1        PowerButton
+LED                 KEYWORD1        LED
+BluetoothServer     KEYWORD1        BluetoothServer
+BLECallbackHandler  KEYWORD1        BLECallbackHandler
+
 
 ##########################################
 # Methods and functions (KEYWORD2)
 ##########################################
 
-get_microsievert    KEYWORD2
+get_microsievert        KEYWORD2
 get_counts_per_minute   KEYWORD2
-setup   KEYWORD2
-loop    KEYWORD2
-on      KEYWORD2
-off     KEYWORD2
-toggle  KEYWORD2
-is_on   KEYWORD2
+setup                   KEYWORD2
+loop                    KEYWORD2
+impulse                 KEYWORD2
+on                      KEYWORD2
+off                     KEYWORD2
+toggle                  KEYWORD2
+is_on                   KEYWORD2
+impulse                 KEYWORD2
+onConnect               KEYWORD2
+onDisconnect            KEYWORD2
+isConnected             KEYWORD2
