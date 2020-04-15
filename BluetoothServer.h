@@ -26,16 +26,19 @@ class BluetoothServer
 
 public:
 
-    BluetoothServer();
+    BluetoothServer(bool start = false);
     ~BluetoothServer();
 
-    void impulse();
+    void send_data(float msvh);
+    void start();
+    void stop();
+    bool is_active();
 
 private:
 
     BLECharacteristic* cpm;
     BLECallbackHandler* handler;
-    bool connected;
+    bool active;
 
 };
 

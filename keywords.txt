@@ -7,12 +7,11 @@
 ##########################################
 
 GeigerCounter       KEYWORD1        GeigerCounter
-GCButton            KEYWORD1        GCButton
-PowerButton         KEYWORD1        PowerButton
 LED                 KEYWORD1        LED
 BluetoothServer     KEYWORD1        BluetoothServer
 BLECallbackHandler  KEYWORD1        BLECallbackHandler
-
+BLEButton			KEYWORD1		BLEButton
+Array				KEYWORD1		Array
 
 ##########################################
 # Methods and functions (KEYWORD2)

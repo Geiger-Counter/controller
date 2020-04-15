@@ -3,20 +3,30 @@
 
 #include <Arduino.h>
 #include <SPI.h>
+#include <LiquidCrystal.h>
 #include "BluetoothServer.h"
 
 #define GC_LOG_PERIOD 15000
 #define GC_MAX_PERIOD 60000
 
+enum BLEState {
+    START,
+    STOP,
+    WAIT
+};
+
 class GeigerCounter {
 
 public:
 
-    static void setup(int GEIGER_PIN, BluetoothServer* server);
+    static void setup(int GEIGER_PIN, BluetoothServer* server, LiquidCrystal* lcd);
     static float get_microsievert();
     static unsigned int get_counts_per_minute();
     static void loop();
     static void impulse();
+    static void start_bluetooth();
+    static void stop_bluetooth();
+    static void toggle_bluetooth();
 
 private:
 
@@ -24,7 +34,9 @@ private:
     static unsigned int cpm;
     static unsigned int multiplier;
     static unsigned long previous_ms;
+    static BLEState bleState;
     static BluetoothServer* bluetoothServer;
+    static LiquidCrystal* lcd;
 
 
 };
