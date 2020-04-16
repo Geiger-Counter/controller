@@ -5,9 +5,9 @@
 #include <SPI.h>
 #include <LiquidCrystal.h>
 #include "BluetoothServer.h"
+#include "LinkedList.h"
 
-#define GC_LOG_PERIOD 15000
-#define GC_MAX_PERIOD 60000
+#define GC_LOG_PERIOD 5000
 
 enum BLEState {
     START,
@@ -30,10 +30,9 @@ public:
 
 private:
 
-    static unsigned int count;
     static unsigned int cpm;
-    static unsigned int multiplier;
     static unsigned long previous_ms;
+    static LinkedList<long> detections;
     static BLEState bleState;
     static BluetoothServer* bluetoothServer;
     static LiquidCrystal* lcd;
