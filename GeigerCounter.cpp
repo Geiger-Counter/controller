@@ -3,14 +3,12 @@
 unsigned int GeigerCounter::cpm = 0;
 unsigned long GeigerCounter::previous_ms = 0;
 BluetoothServer* GeigerCounter::bluetoothServer = nullptr;
-LiquidCrystal* GeigerCounter::lcd = nullptr;
 BLEState GeigerCounter::bleState = WAIT;
 LinkedList<long> GeigerCounter::detections = LinkedList<long>();
 
-void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server, LiquidCrystal* display) {
+void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server) {
 
     bluetoothServer = server;
-    lcd = display;
 
     attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
 

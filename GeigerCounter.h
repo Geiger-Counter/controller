@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#include <LiquidCrystal.h>
 #include "BluetoothServer.h"
 #include "LinkedList.h"
 
@@ -19,7 +18,7 @@ class GeigerCounter {
 
 public:
 
-    static void setup(int GEIGER_PIN, BluetoothServer* server, LiquidCrystal* lcd);
+    static void setup(int GEIGER_PIN, BluetoothServer* server);
     static float get_microsievert();
     static unsigned int get_counts_per_minute();
     static void loop();
@@ -35,7 +34,6 @@ private:
     static LinkedList<long> detections;
     static BLEState bleState;
     static BluetoothServer* bluetoothServer;
-    static LiquidCrystal* lcd;
 
 
 };

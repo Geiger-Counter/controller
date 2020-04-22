@@ -1,8 +1,9 @@
-#ifndef GCDISPLAY_H
-#define GCDISPLAY_H
+#ifndef GEIGERCOUNTER_DISPLAY_H
+#define GEIGERCOUNTER_DISPLAY_H
 
 #include <Arduino.h>
 #include "heltec.h"
+#include "GeigerCounter.h"
 #include "icons.h"
 
 enum DisplayState {
