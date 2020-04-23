@@ -8,9 +8,11 @@
 #include <BLE2902.h>
 #include "BLECallbackHandler.h"
 
-#define SERVICE_UUID "cd8e6468-20b4-40bd-89b5-33c53993c4fb"
-#define CHAR_UUID "52c9a69c-6078-4011-97d5-f3417c882102"
-#define DESC_UUID "90e6d6ca-e868-4943-9b9a-4efd4fdcede9"
+#define SERVICE_UUID "02ed48d7-69b1-4603-9899-a05aa175f9d6"
+#define MSV_CHAR_UUID "caf31b35-b140-489f-b875-36893157d6cf"
+#define MSV_DESC_UUID "3065e35b-5433-44cb-96f4-215887e225a3"
+#define CPM_CHAR_UUID "a4596a0a-a378-49e4-9256-1abfe5784fbd"
+#define CPM_DEC_UUID "5b4e4513-2aa3-4180-b155-c1e3a720a756"
 
 /**
  * BluetoothServer Class
@@ -29,7 +31,7 @@ public:
     BluetoothServer(bool start = false);
     ~BluetoothServer();
 
-    void send_data(float msvh);
+    void send_data(float msvh, int cpm);
     void start();
     void stop();
     bool is_active();
@@ -37,8 +39,12 @@ public:
 private:
 
     BLECharacteristic* cpm;
+    BLECharacteristic* msvh;
     BLECallbackHandler* handler;
     bool active;
+    char* ble_code;
+
+    BLECharacteristic* create_ble_characteristic(BLEService* service, char* char_uuid, char* desc_uuid, char* name, int start = 0);
 
 };
 

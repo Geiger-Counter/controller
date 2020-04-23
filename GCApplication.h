@@ -5,8 +5,8 @@
 #include "Display.h"
 #include "GeigerCounter.h"
 #include "BluetoothServer.h"
-#include "BLEButton.h"
-#include "LED.h"
+#include "GCButton.h"
+#include "GC_LED.h"
 
 #define BLUETOOTH_BTN_PIN 19
 #define TOGGLE_BTN_PIN 23
@@ -28,9 +28,11 @@ public:
 
 private:
 
-    BLEButton* bleButton;
-    //LED* greenLED;
-    //LED* redLED;
+    GCButton* bleButton;
+    GCButton* toggleButton;
+    
+    GC_LED* greenLED;
+    GC_LED* redLED;
 
 };
 

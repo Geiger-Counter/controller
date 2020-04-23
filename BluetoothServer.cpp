@@ -25,23 +25,40 @@ void BluetoothServer::start() {
         /**
          * Create a new BLE service for providing impulse values
          */
-        BLEService* cpmService = server->createService(SERVICE_UUID);
-        cpm = new BLECharacteristic(
-                CHAR_UUID,
-                BLECharacteristic::PROPERTY_READ |
-                BLECharacteristic::PROPERTY_NOTIFY
+        // BLEService* cpmService = server->createService(SERVICE_UUID);
+        // cpm = new BLECharacteristic(
+        //         CHAR_UUID,
+        //         BLECharacteristic::PROPERTY_READ |
+        //         BLECharacteristic::PROPERTY_NOTIFY
+        // );
+        // BLEDescriptor* cpmDesc = new BLEDescriptor(DESC_UUID);
+
+        // cpmService->addCharacteristic(cpm);
+        // char buf[16];
+        // long time = 0;
+        // ltoa(time, buf, 10);
+        // cpmDesc->setValue(buf);
+        // cpm->addDescriptor(cpmDesc);
+        // cpm->addDescriptor(new BLE2902());
+
+        // cpmService->start();
+
+        BLEService* service = server->createService(SERVICE_UUID);
+        cpm = create_ble_characteristic(
+            service,
+            CPM_CHAR_UUID,
+            CPM_DEC_UUID,
+            "counts per minute"
         );
-        BLEDescriptor* cpmDesc = new BLEDescriptor(DESC_UUID);
+        msvh = create_ble_characteristic(
+            service,
+            MSV_CHAR_UUID,
+            MSV_DESC_UUID,
+            "microsievert per hour"
+        );
 
-        cpmService->addCharacteristic(cpm);
-        char buf[16];
-        long time = 0;
-        ltoa(time, buf, 10);
-        cpmDesc->setValue(buf);
-        cpm->addDescriptor(cpmDesc);
-        cpm->addDescriptor(new BLE2902());
+        service->start();
 
-        cpmService->start();
         BLEAdvertising* advertising = BLEDevice::getAdvertising();
         advertising->addServiceUUID(SERVICE_UUID);
         advertising->setScanResponse(true);
@@ -59,6 +76,7 @@ void BluetoothServer::stop() {
         Serial.println("Stopping Bluetooth Server ...");
         BLEDevice::deinit(true);
         cpm = nullptr;
+        msvh = nullptr;
         handler = nullptr;
         active = false;
         Serial.println("BluetoothServer stopped");
@@ -69,14 +87,38 @@ bool BluetoothServer::is_active() {
     return active;
 }
 
-void BluetoothServer::send_data(float msvh) {
+void BluetoothServer::send_data(float msvh_val, int cpm_val) {
     if(active) {
         if(handler->isConnected()) {
-            char buf[16];
-            ltoa(msvh, buf, 10);
-            cpm->setValue(buf);
+            char msvh_buf[16];
+            snprintf(msvh_buf, sizeof(msvh_buf), "%f", msvh_val);
+            msvh->setValue(msvh_buf);
+            char cpm_buf[16];
+            ltoa(cpm_val, cpm_buf, 10);
+            cpm->setValue(cpm_buf);
+            msvh->notify();
             cpm->notify();
         }
     }
+}
+
+BLECharacteristic* BluetoothServer::create_ble_characteristic(BLEService* service, char* char_uuid, char* desc_uuid, char* name, int start)
+{
+    BLECharacteristic* characteristic = new BLECharacteristic(
+        char_uuid,
+        BLECharacteristic::PROPERTY_READ |
+        BLECharacteristic::PROPERTY_NOTIFY
+    );
+    BLEDescriptor* descriptor = new BLEDescriptor(desc_uuid);
+
+    service->addCharacteristic(characteristic);
+    char buf[16];
+    ltoa(start, buf, 10);
+    characteristic->setValue(buf);
+    characteristic->addDescriptor(descriptor);
+    characteristic->addDescriptor(new BLE2902());
+    descriptor->setValue(name);
+
+    return characteristic;
 }
 

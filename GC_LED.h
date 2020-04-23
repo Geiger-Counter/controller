@@ -3,12 +3,12 @@
 
 #include <Arduino.h>
 
-class LED {
+class GC_LED {
 
 public:
 
-    LED(int LED_PIN);
-    ~LED();
+    GC_LED(int LED_PIN);
+    ~GC_LED();
 
     void on();
     void off();

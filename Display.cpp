@@ -85,21 +85,24 @@ void Display::changeState(DisplayState _state) {
     state = _state;
 }
 
+void Display::toggleState() {
+    
+}
+
 void Display::printBLEIcon() 
 {
-    Heltec.display->drawXbm(2, 2, ble_icon_width, ble_icon_height, ble_icon_bits);
+    Heltec.display->drawXbm(2, 2, BT_width, BT_height, BT_bits);
 }
 
 void Display::printWiFiIcon() 
 {
-    int width = ble_active ? 13 : 2;
-    Heltec.display->drawXbm(width, 2, wifi_icon_width, wifi_icon_height, wifi_icon_bits);
+    int width = ble_active ? 12 : 2;
+    Heltec.display->drawXbm(width, 2, WIFI_width, WIFI_height, WIFI_bits);
 }
 
 void Display::printBattery()
 {
-    Heltec.display->setTextAlignment(TEXT_ALIGN_RIGHT);
-    Heltec.display->drawString(126, 2, String(battery_charge, 0) + "%");
+    Heltec.display->drawXbm(106, 2, BAT_width, BAT_height, BAT_bits);
 }
 
 void Display::renderStatistics()

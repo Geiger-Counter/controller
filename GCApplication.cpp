@@ -1,6 +1,9 @@
 #include "GCApplication.h"
 
-GCApplication::GCApplication() {}
+GCApplication::GCApplication() {
+    greenLED = nullptr;
+    redLED = nullptr;
+}
 
 GCApplication::~GCApplication() {}
 
@@ -12,11 +15,16 @@ void GCApplication::setup() {
     BluetoothServer* serverPtr = new BluetoothServer();
     Display::setup();
 
-    bleButton = new BLEButton(BLUETOOTH_BTN_PIN);
-    //greenLED = new LED(GREEN_LED_PIN);
-    //redLED = new LED(RED_LED_PIN);
+    bleButton = new GCButton(BLUETOOTH_BTN_PIN, []() {
+        GeigerCounter::toggle_bluetooth();
+    });
+    toggleButton = new GCButton(TOGGLE_BTN_PIN, []() {
+        Display::toggleState();
+    });
+    greenLED = new GC_LED(GREEN_LED_PIN);
+    redLED = new GC_LED(RED_LED_PIN);
 
-    //greenLED->on();
+    greenLED->on();
 
     GeigerCounter::setup(GEIGER_COUNTER_PIN, serverPtr);
 

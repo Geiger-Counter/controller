@@ -27,6 +27,7 @@ public:
     static void updateBLECode(String code);
     static void updateNewConnection(String connection);
     static void changeState(DisplayState state);
+    static void toggleState();
 
     static DisplayState getState();
 

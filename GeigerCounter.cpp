@@ -19,16 +19,14 @@ void GeigerCounter::loop() {
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
         previous_ms = current_ms;
         int size = detections.size();
-        if(size > 2) {
-            // Multiplier = 60 sec / ((timestamp_last_detection - timestamp_first_detection) / 1000 ms)
-            float multiplier = 60.0 / ((detections.get(size - 1) - detections.get(0)) / 1000.0);
-            cpm = size * multiplier;
+        float multiplier = get_multiplier();
+        cpm = size * multiplier;
 
-            Serial.print("CPM: ");
-            Serial.println(cpm);
-            Serial.print("mSv/h: ");
-            Serial.println(get_microsievert());
-        }
+        Serial.print("CPM: ");
+        Serial.println(cpm);
+        Serial.print("mSv/h: ");
+        Serial.println(get_microsievert());
+        bluetoothServer->send_data(get_microsievert(), cpm);
     }
     switch(bleState) {
         case START:
@@ -53,6 +51,7 @@ void GeigerCounter::stop_bluetooth() {
 }
 
 void GeigerCounter::toggle_bluetooth() {
+    Display::toggleBLE();
     if(bluetoothServer->is_active()) {
         stop_bluetooth();
     } else {
@@ -71,5 +70,17 @@ unsigned int GeigerCounter::get_counts_per_minute() {
 float GeigerCounter::get_microsievert() {
     float msv = (cpm/151.0);
     return msv;
+}
+
+float GeigerCounter::get_multiplier() {
+    // only last 500 entries
+    int size = detections.size();
+    // need a minimum of 5 detections to get a "good" calculation on startup
+    if(size > 5) {
+        int start = size > GC_LOG_SIZE ? size - 500 : 0;
+        // Multiplier = 60 sec / ((timestamp_last_detection - timestamp_start_of_detection) / 1000 ms)
+        return 60.0 / ((detections.get(size - 1)- detections.get(start)) / 1000.0);
+    }
+    return 1.0;
 }
 

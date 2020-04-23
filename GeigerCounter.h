@@ -4,9 +4,11 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include "BluetoothServer.h"
+#include "Display.h"
 #include "LinkedList.h"
 
 #define GC_LOG_PERIOD 5000
+#define GC_LOG_SIZE 500
 
 enum BLEState {
     START,
@@ -34,6 +36,8 @@ private:
     static LinkedList<long> detections;
     static BLEState bleState;
     static BluetoothServer* bluetoothServer;
+
+    static float get_multiplier();
 
 
 };
