@@ -25,7 +25,7 @@ bool StaticMemory::write(MemoryRegister reg, String data)
     return true;
 }
 
-String StaticMemory::read(MemoryRegister reg)
+char* StaticMemory::read(MemoryRegister reg)
 {
     char* tmp = new char[REGISTER_SIZE];
     for(int i = 0; i < REGISTER_SIZE; i++) {
@@ -36,7 +36,7 @@ String StaticMemory::read(MemoryRegister reg)
         }
         tmp[i] = (char) read;
     }
-    return String(tmp);
+    return tmp;
 }
 
 bool StaticMemory::save()

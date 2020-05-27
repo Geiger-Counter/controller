@@ -3,12 +3,17 @@
 unsigned int GeigerCounter::cpm = 0;
 unsigned long GeigerCounter::previous_ms = 0;
 BluetoothServer* GeigerCounter::bluetoothServer = nullptr;
-BLEState GeigerCounter::bleState = WAIT;
+ButtonState GeigerCounter::bleState = WAIT;
+ButtonState GeigerCounter::wifiState = WAIT;
 LinkedList<long> GeigerCounter::detections = LinkedList<long>();
+WiFiHandler* GeigerCounter::wifiHandler = nullptr;
+struct Settings* GeigerCounter::settings = nullptr;
 
-void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server) {
+void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server, WiFiHandler *handler) {
 
     bluetoothServer = server;
+    wifiHandler = handler;
+    settings = load_settings();
 
     attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
 
@@ -17,6 +22,7 @@ void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server) {
 void GeigerCounter::loop() {
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
+        send_data(settings, detections);
         previous_ms = current_ms;
         int size = detections.size();
         float multiplier = get_multiplier();
@@ -27,6 +33,9 @@ void GeigerCounter::loop() {
         Serial.print("mSv/h: ");
         Serial.println(get_microsievert());
         bluetoothServer->send_data(get_microsievert(), cpm);
+        if(wifiState == RUNNING) {
+            //API::send_data()
+        }
     }
     switch(bleState) {
         case START:
@@ -36,6 +45,18 @@ void GeigerCounter::loop() {
         case STOP:
             bluetoothServer->stop();
             bleState = WAIT;
+            break;
+        default:
+            break;
+    }
+    switch(wifiState) {
+        case START:
+            wifiHandler->on();
+            wifiState = RUNNING;
+            break;
+        case STOP:
+            wifiHandler->off();
+            wifiState = WAIT;
             break;
         default:
             break;
@@ -59,8 +80,28 @@ void GeigerCounter::toggle_bluetooth() {
     }
 }
 
+void GeigerCounter::start_wifi() {
+    wifiState = START;
+}
+
+void GeigerCounter::stop_wifi() {
+    wifiState = STOP;
+}
+
+void GeigerCounter::toggle_wifi() {
+    Display::toggleWiFi();
+    if(wifiHandler->is_connected()) {
+        stop_wifi();
+    } else {
+        start_wifi();
+    }
+}
+
 void GeigerCounter::impulse() {
     detections.add(millis());
+    if(detections.size() > 999) {
+        detections.shift();
+    }
 }
 
 unsigned int GeigerCounter::get_counts_per_minute() {

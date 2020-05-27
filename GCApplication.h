@@ -9,6 +9,7 @@
 #include "GC_LED.h"
 
 #define BLUETOOTH_BTN_PIN 19
+#define WIFI_BTN_PIN 1
 #define TOGGLE_BTN_PIN 23
 
 #define GREEN_LED_PIN 21
@@ -29,10 +30,12 @@ public:
 private:
 
     GCButton* bleButton;
+    GCButton* wifiButton;
     GCButton* toggleButton;
     
     GC_LED* greenLED;
     GC_LED* redLED;
+    GC_LED* statusLED;
 
 };
 

@@ -3,6 +3,9 @@
 GCApplication::GCApplication() {
     greenLED = nullptr;
     redLED = nullptr;
+    bleButton = nullptr;
+    wifiButton = nullptr;
+    toggleButton = nullptr;
 }
 
 GCApplication::~GCApplication() {}
@@ -13,10 +16,14 @@ void GCApplication::setup() {
     Serial.println("GeigerCounter started");
 
     BluetoothServer* serverPtr = new BluetoothServer();
+    WiFiHandler handler = 
     Display::setup();
 
     bleButton = new GCButton(BLUETOOTH_BTN_PIN, []() {
         GeigerCounter::toggle_bluetooth();
+    });
+    wifiButton = new GCButton(WIFI_BTN_PIN, []() {
+        GeigerCounter::toggle_wifi();
     });
     toggleButton = new GCButton(TOGGLE_BTN_PIN, []() {
         Display::toggleState();
