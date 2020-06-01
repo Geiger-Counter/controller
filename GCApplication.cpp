@@ -16,7 +16,6 @@ void GCApplication::setup() {
     Serial.println("GeigerCounter started");
 
     BluetoothServer* serverPtr = new BluetoothServer();
-    WiFiHandler handler = 
     Display::setup();
 
     bleButton = new GCButton(BLUETOOTH_BTN_PIN, []() {
@@ -33,7 +32,7 @@ void GCApplication::setup() {
 
     greenLED->on();
 
-    GeigerCounter::setup(GEIGER_COUNTER_PIN, serverPtr);
+    GeigerCounter::setup(GEIGER_COUNTER_PIN, serverPtr, nullptr);
 
 }
 

@@ -9,7 +9,7 @@
 #include "GC_LED.h"
 
 #define BLUETOOTH_BTN_PIN 19
-#define WIFI_BTN_PIN 1
+#define WIFI_BTN_PIN 5
 #define TOGGLE_BTN_PIN 23
 
 #define GREEN_LED_PIN 21

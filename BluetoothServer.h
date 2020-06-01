@@ -28,7 +28,7 @@ class BluetoothServer
 
 public:
 
-    BluetoothServer(bool start = false);
+    BluetoothServer( bool start = false);
     ~BluetoothServer();
 
     void send_data(float msvh, int cpm);

@@ -1,6 +1,8 @@
 #ifndef Functions_H
 #define Functions_H
 
+#include <Arduino.h>
+
 char* printf(char* specifier, char* str);
 char* printf(char* specifier, char car);
 char* printf(char* specifier, int number);

@@ -8,7 +8,7 @@ class WiFiHandler {
 
 public:
 
-    static void setup(char* ssid, char* password, char* backend_url = nullptr, int interval);
+    static void setup(char* ssid, char* password, char* backend_url, int interval);
     static bool on();
     static void off();
     static bool is_connected();

@@ -8,7 +8,7 @@ char* printf(char* specifier, char* str) {
 
 char* printf(char* specifier, char car) {
     char tmp[(sizeof(specifier)/sizeof(char))];
-    sprintf(tmp, specifier, str);
+    sprintf(tmp, specifier, car);
     return tmp;
 }
 

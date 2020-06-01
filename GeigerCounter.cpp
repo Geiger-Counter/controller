@@ -22,7 +22,7 @@ void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server, WiFiHandler *
 void GeigerCounter::loop() {
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
-        send_data(settings, detections);
+        //send_data(settings, detections);
         previous_ms = current_ms;
         int size = detections.size();
         float multiplier = get_multiplier();

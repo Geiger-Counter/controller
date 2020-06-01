@@ -24,7 +24,7 @@ class GeigerCounter {
 
 public:
 
-    static void setup(int GEIGER_PIN, BluetoothServer* server);
+    static void setup(int GEIGER_PIN, BluetoothServer* server, WiFiHandler* handler);
     static float get_microsievert();
     static unsigned int get_counts_per_minute();
     static void loop();

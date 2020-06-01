@@ -3,13 +3,12 @@
 BluetoothServer::BluetoothServer(bool start) {
 
     active = false;
+
     if(start) {
         BluetoothServer::start();
     }
 
 }
-
-BluetoothServer::~BluetoothServer() {};
 
 void BluetoothServer::start() {
 
@@ -21,27 +20,6 @@ void BluetoothServer::start() {
 
         handler = new BLECallbackHandler();
         server->setCallbacks(handler);
-
-        /**
-         * Create a new BLE service for providing impulse values
-         */
-        // BLEService* cpmService = server->createService(SERVICE_UUID);
-        // cpm = new BLECharacteristic(
-        //         CHAR_UUID,
-        //         BLECharacteristic::PROPERTY_READ |
-        //         BLECharacteristic::PROPERTY_NOTIFY
-        // );
-        // BLEDescriptor* cpmDesc = new BLEDescriptor(DESC_UUID);
-
-        // cpmService->addCharacteristic(cpm);
-        // char buf[16];
-        // long time = 0;
-        // ltoa(time, buf, 10);
-        // cpmDesc->setValue(buf);
-        // cpm->addDescriptor(cpmDesc);
-        // cpm->addDescriptor(new BLE2902());
-
-        // cpmService->start();
 
         BLEService* service = server->createService(SERVICE_UUID);
         cpm = create_ble_characteristic(
@@ -121,4 +99,3 @@ BLECharacteristic* BluetoothServer::create_ble_characteristic(BLEService* servic
 
     return characteristic;
 }
-

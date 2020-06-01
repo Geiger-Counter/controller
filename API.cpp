@@ -9,10 +9,10 @@ bool send_data(struct Settings* settings, LinkedList<long> data) {
     return true;
 }
 
-char* parse_json(char* username, char* token, LinkedList<long>data) {
+char* parse_json(char* username, char* token, LinkedList<long> data) {
     String d = "";
-    for(int i = 0; i < list.size(); i++) {
-        d += to_string(list.get(i)) + ",";
+    for(int i = 0; i < data.size(); i++) {
+        d += String(data.get(i)) + ",";
     }
     d = d.substring(0, d.length() - 1);
     String json = "{\"username\":\"";

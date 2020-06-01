@@ -16,8 +16,8 @@ void WiFiHandler::setup(char* ssid, char* password, char* backend_url, int inter
 }
 
 bool WiFiHandler::on() {
-    status = WiFi.begin(ssid, password);
-    if(status != WL_CONNECTED {
+    int status = WiFi.begin(ssid, password);
+    if(status != WL_CONNECTED) {
         Serial.println("Couldn't get a wifi connection");
         return false;
     } else {
