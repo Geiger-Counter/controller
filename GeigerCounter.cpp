@@ -29,8 +29,8 @@ void GeigerCounter::loop() {
         cpm = size * multiplier;
 
         Serial.print("CPM: ");
-        Serial.println(cpm);
-        Serial.print("mSv/h: ");
+        Serial.print(cpm);
+        Serial.print(" | mSv/h: ");
         Serial.println(get_microsievert());
         bluetoothServer->send_data(get_microsievert(), cpm);
         if(wifiState == RUNNING) {
@@ -40,10 +40,12 @@ void GeigerCounter::loop() {
     switch(bleState) {
         case START:
             bluetoothServer->start();
+            Display::showBLE();
             bleState = WAIT;
             break;
         case STOP:
             bluetoothServer->stop();
+            Display::hideBLE();
             bleState = WAIT;
             break;
         default:
@@ -52,10 +54,12 @@ void GeigerCounter::loop() {
     switch(wifiState) {
         case START:
             wifiHandler->on();
+            Display::showWiFi();
             wifiState = RUNNING;
             break;
         case STOP:
             wifiHandler->off();
+            Display::hideWiFi();
             wifiState = WAIT;
             break;
         default:
@@ -72,7 +76,6 @@ void GeigerCounter::stop_bluetooth() {
 }
 
 void GeigerCounter::toggle_bluetooth() {
-    Display::toggleBLE();
     if(bluetoothServer->is_active()) {
         stop_bluetooth();
     } else {
@@ -89,7 +92,6 @@ void GeigerCounter::stop_wifi() {
 }
 
 void GeigerCounter::toggle_wifi() {
-    Display::toggleWiFi();
     if(wifiHandler->is_connected()) {
         stop_wifi();
     } else {
@@ -118,6 +120,7 @@ float GeigerCounter::get_multiplier() {
     int size = detections.size();
     // need a minimum of 5 detections to get a "good" calculation on startup
     if(size > 5) {
+        // TODO: better appraisal of required data
         int start = size > GC_LOG_SIZE ? size - 500 : 0;
         // Multiplier = 60 sec / ((timestamp_last_detection - timestamp_start_of_detection) / 1000 ms)
         return 60.0 / ((detections.get(size - 1)- detections.get(start)) / 1000.0);

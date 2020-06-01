@@ -38,6 +38,7 @@ public:
 
 private:
 
+    BLEServer* server;
     BLECharacteristic* cpm;
     BLECharacteristic* msvh;
     BLECallbackHandler* handler;

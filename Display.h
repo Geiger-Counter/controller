@@ -19,8 +19,10 @@ public:
     static void setup();
     static void loop();
 
-    static void toggleBLE();
-    static void toggleWiFi();
+    static void showBLE();
+    static void hideBLE();
+    static void showWiFi();
+    static void hideWiFi();
 
     static void updateBattery(float percentage);
     static void updateStatistic(float msv, int cpm);

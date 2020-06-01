@@ -14,9 +14,11 @@ void BluetoothServer::start() {
 
     if(!active) {
         active = true;
+        Serial.print("BLE initialized: ");
+        Serial.println(BLEDevice::getInitialized());
         BLEDevice::init("GeigerCounter BT Server");
         Serial.println("BluetoothServer starting...");
-        BLEServer* server = BLEDevice::createServer();
+        server = BLEDevice::createServer();
 
         handler = new BLECallbackHandler();
         server->setCallbacks(handler);
@@ -52,7 +54,12 @@ void BluetoothServer::start() {
 void BluetoothServer::stop() {
     if(active) {
         Serial.println("Stopping Bluetooth Server ...");
-        BLEDevice::deinit(true);
+        BLEDevice::deinit();
+        delete server;
+        delete cpm;
+        delete msvh;
+        delete handler;
+        server = nullptr;
         cpm = nullptr;
         msvh = nullptr;
         handler = nullptr;

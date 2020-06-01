@@ -22,6 +22,7 @@ void Display::loop()
     Heltec.display->clear();
     Heltec.display->setFont(ArialMT_Plain_10);
     
+
     if(ble_active) {
         printBLEIcon();
     }
@@ -50,14 +51,20 @@ void Display::loop()
 
 }
 
-void Display::toggleBLE() 
-{
-    ble_active = !ble_active;
+void Display::showBLE() {
+    ble_active = true;
 }
 
-void Display::toggleWiFi()
-{
-    wifi_active = !wifi_active;
+void Display::hideBLE() {
+    ble_active = false;
+}
+
+void Display::showWiFi(){
+    wifi_active = true;
+}
+
+void Display::hideWiFi() {
+    wifi_active = false;
 }
 
 void Display::updateBattery(float percentage)

@@ -4,11 +4,11 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include "BluetoothServer.h"
-#include "Display.h"
 #include "LinkedList.h"
 #include "WiFiHandler.h"
 #include "API.h"
 #include "Settings.h"
+#include "Display.h"
 
 #define GC_LOG_PERIOD 5000
 #define GC_LOG_SIZE 500
