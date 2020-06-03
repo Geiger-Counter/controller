@@ -4,12 +4,12 @@ bool send_data(struct Settings* settings, LinkedList<long> data) {
     HTTPClient client;
     client.begin(settings->api->endpoint_uri);
     client.addHeader("Content-Type", "application/json");
-    char* json = parse_json(settings->api->username, settings->api->token, data);
+    String json = parse_json(settings->api->username, settings->api->token, data);
     Serial.println(json);
     return true;
 }
 
-char* parse_json(char* username, char* token, LinkedList<long> data) {
+String parse_json(char* username, char* token, LinkedList<long> data) {
     String d = "";
     for(int i = 0; i < data.size(); i++) {
         d += String(data.get(i)) + ",";
@@ -22,7 +22,5 @@ char* parse_json(char* username, char* token, LinkedList<long> data) {
     json.concat("\",\"data\":["),
     json.concat(d);
     json.concat("]}");
-    char* str = new char[json.length()];
-    json.toCharArray(str, json.length());
-    return str;
+    return json;
 }
