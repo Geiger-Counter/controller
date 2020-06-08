@@ -12,9 +12,9 @@ git clone git@github.com:mc17uulm/GeigerCounter.git
 
 ### Arduino IDE
 ````c++
-#include "GCApplication.h"
+#include "./src/GeigerCounter.h"
 
-GCApplication app;
+GeigerCounter app;
 
 void setup() {
   app.setup();

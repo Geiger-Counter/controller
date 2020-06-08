@@ -1,11 +1,11 @@
 #include "Settings.h"
 
 struct Settings* load_settings() {
-    char* ssid = StaticMemory::read(MemoryRegister::SSID);
-    char* password = StaticMemory::read(MemoryRegister::PASSWORD);
-    char* username = StaticMemory::read(MemoryRegister::API_USER);
-    char* token = StaticMemory::read(MemoryRegister::API_TOKEN);
-    char* endpoint = StaticMemory::read(MemoryRegister::API_ENDPOINT);
+    const char* ssid = StaticMemory::read(MemoryRegister::SSID);
+    const char* password = StaticMemory::read(MemoryRegister::PASSWORD);
+    const char* username = StaticMemory::read(MemoryRegister::API_USER);
+    const char* token = StaticMemory::read(MemoryRegister::API_TOKEN);
+    const char* endpoint = StaticMemory::read(MemoryRegister::API_ENDPOINT);
 
     struct APISettings* api = (struct APISettings*) malloc(sizeof(APISettings));
     struct Settings* settings = (struct Settings*) malloc(sizeof(Settings));

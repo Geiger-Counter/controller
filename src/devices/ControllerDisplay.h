@@ -1,18 +1,18 @@
-#ifndef GEIGERCOUNTER_DISPLAY_H
-#define GEIGERCOUNTER_DISPLAY_H
+#ifndef GEIGERCOUNTER_CONTROLLER_DISPLAY_H
+#define GEIGERCOUNTER_CONTROLLER_DISPLAY_H
 
 #include <Arduino.h>
-#include "heltec.h"
-#include "GeigerCounter.h"
-#include "icons.h"
+#include <heltec.h>
+#include "./../MainHandler.h"
+#include "./../icons.h"
 
-enum DisplayState {
+enum ControllerDisplayState {
     STATISTIC,
     BLE_CODE,
     NEW_CONNECTION
 };
 
-class Display {
+class ControllerDisplay {
 
 public:
 
@@ -28,14 +28,14 @@ public:
     static void updateStatistic(float msv, int cpm);
     static void updateBLECode(String code);
     static void updateNewConnection(String connection);
-    static void changeState(DisplayState state);
+    static void changeState(ControllerDisplayState state);
     static void toggleState();
 
-    static DisplayState getState();
+    static ControllerDisplayState getState();
 
 private:
 
-    static DisplayState state;
+    static ControllerDisplayState state;
     static bool ble_active;
     static bool wifi_active;
     static float battery_charge;

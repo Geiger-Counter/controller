@@ -1,5 +1,5 @@
-#ifndef BLECallbackHandler_H
-#define BLECallbackHandler_H
+#ifndef GEIGERCOUNTER_SERVICE_CALLBACK_HANDLER_H
+#define GEIGERCOUNTER_SERVICE_CALLBACK_HANDLER_H
 
 #include <Arduino.h>
 #include <BLEServer.h>
@@ -13,13 +13,13 @@
  *
  */
 
-class BLECallbackHandler : public BLEServerCallbacks
+class ServiceCallbackHandler : public BLEServerCallbacks
 {
 
 public:
 
-    BLECallbackHandler();
-    ~BLECallbackHandler();
+    ServiceCallbackHandler();
+    ~ServiceCallbackHandler();
     void onConnect(BLEServer* server);
     void onDisconnect(BLEServer* server);
     bool isConnected();

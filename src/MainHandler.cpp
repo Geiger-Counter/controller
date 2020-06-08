@@ -1,28 +1,28 @@
-#include "GeigerCounter.h"
+#include "MainHandler.h"
 
-unsigned int GeigerCounter::cpm = 0;
-unsigned long GeigerCounter::previous_ms = 0;
-BluetoothServer* GeigerCounter::bluetoothServer = nullptr;
-ButtonState GeigerCounter::bleState = WAIT;
-ButtonState GeigerCounter::wifiState = WAIT;
-LinkedList<long> GeigerCounter::detections = LinkedList<long>();
-WiFiHandler* GeigerCounter::wifiHandler = nullptr;
-struct Settings* GeigerCounter::settings = nullptr;
+unsigned int MainHandler::cpm = 0;
+unsigned long MainHandler::previous_ms = 0;
+BluetoothServer* MainHandler::bluetoothServer = nullptr;
+ButtonState MainHandler::bleState = WAIT;
+ButtonState MainHandler::wifiState = WAIT;
+LinkedList<long> MainHandler::detections = LinkedList<long>();
+WiFiHandler* MainHandler::wifiHandler = nullptr;
+struct Settings* MainHandler::settings = nullptr;
 
-void GeigerCounter::setup(int GEIGER_PIN, BluetoothServer* server, WiFiHandler *handler) {
+void MainHandler::setup(int GEIGER_PIN, struct Settings* settings, BluetoothServer* server, WiFiHandler *handler) {
 
     bluetoothServer = server;
     wifiHandler = handler;
-    settings = load_settings();
+    settings = settings;
 
     attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
 
 }
 
-void GeigerCounter::loop() {
+void MainHandler::loop() {
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
-        send_data(settings, detections);
+        //send_data(settings, detections);
         previous_ms = current_ms;
         int size = detections.size();
         float multiplier = get_multiplier();
@@ -40,12 +40,12 @@ void GeigerCounter::loop() {
     switch(bleState) {
         case START:
             bluetoothServer->start();
-            Display::showBLE();
+            ControllerDisplay::showBLE();
             bleState = WAIT;
             break;
         case STOP:
             bluetoothServer->stop();
-            Display::hideBLE();
+            ControllerDisplay::hideBLE();
             bleState = WAIT;
             break;
         default:
@@ -54,12 +54,12 @@ void GeigerCounter::loop() {
     switch(wifiState) {
         case START:
             wifiHandler->on();
-            Display::showWiFi();
+            ControllerDisplay::showWiFi();
             wifiState = RUNNING;
             break;
         case STOP:
             wifiHandler->off();
-            Display::hideWiFi();
+            ControllerDisplay::hideWiFi();
             wifiState = WAIT;
             break;
         default:
@@ -67,15 +67,15 @@ void GeigerCounter::loop() {
     }
 }
 
-void GeigerCounter::start_bluetooth() {
+void MainHandler::start_bluetooth() {
     bleState = START;
 }
 
-void GeigerCounter::stop_bluetooth() {
+void MainHandler::stop_bluetooth() {
     bleState = STOP;
 }
 
-void GeigerCounter::toggle_bluetooth() {
+void MainHandler::toggle_bluetooth() {
     if(bluetoothServer->is_active()) {
         stop_bluetooth();
     } else {
@@ -83,15 +83,15 @@ void GeigerCounter::toggle_bluetooth() {
     }
 }
 
-void GeigerCounter::start_wifi() {
+void MainHandler::start_wifi() {
     wifiState = START;
 }
 
-void GeigerCounter::stop_wifi() {
+void MainHandler::stop_wifi() {
     wifiState = STOP;
 }
 
-void GeigerCounter::toggle_wifi() {
+void MainHandler::toggle_wifi() {
     if(wifiHandler->is_connected()) {
         stop_wifi();
     } else {
@@ -99,23 +99,29 @@ void GeigerCounter::toggle_wifi() {
     }
 }
 
-void GeigerCounter::impulse() {
-    detections.add(millis());
+struct Settings* MainHandler::get_settings() {
+    return settings;
+}
+
+void MainHandler::impulse() {
+    unsigned long time = millis();
+    detections.add(time);
     if(detections.size() > 999) {
         detections.shift();
     }
+    bluetoothServer->decay_impulse(time);
 }
 
-unsigned int GeigerCounter::get_counts_per_minute() {
+unsigned int MainHandler::get_counts_per_minute() {
     return cpm;
 }
 
-float GeigerCounter::get_microsievert() {
+float MainHandler::get_microsievert() {
     float msv = (cpm/151.0);
     return msv;
 }
 
-float GeigerCounter::get_multiplier() {
+float MainHandler::get_multiplier() {
     // only last 500 entries
     int size = detections.size();
     // need a minimum of 5 detections to get a "good" calculation on startup

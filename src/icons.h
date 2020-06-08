@@ -1,3 +1,6 @@
+#ifndef GEIGERCOUNTER_ICONS_H
+#define GEIGERCOUNTER_ICONS_H
+
 #define ble_icon_width 9
 #define ble_icon_height 18
 const unsigned char ble_icon_bits[] PROGMEM = {
@@ -41,3 +44,5 @@ const unsigned char WIFI_bits[] PROGMEM = {
   };
 
 #pragma once
+
+#endif

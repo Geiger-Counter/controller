@@ -1,14 +1,14 @@
-#ifndef GC_LED_H
-#define GC_LED_H
+#ifndef GEIGERCOUNTER_CONTROLLER_LED_H
+#define GEIGERCOUNTER_CONTROLLER_LED_H
 
 #include <Arduino.h>
 
-class GC_LED {
+class ControllerLED {
 
 public:
 
-    GC_LED(int LED_PIN);
-    ~GC_LED();
+    ControllerLED(int LED_PIN);
+    ~ControllerLED();
 
     void on();
     void off();

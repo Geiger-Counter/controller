@@ -1,6 +1,6 @@
-#include "GCApplication.h"
+#include "./src/GeigerCounter.h"
 
-GCApplication app;
+GeigerCounter app;
 
 void setup() {
   app.setup();

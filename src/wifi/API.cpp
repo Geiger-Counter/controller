@@ -1,15 +1,16 @@
 #include "API.h"
 
 bool send_data(struct Settings* settings, LinkedList<long> data) {
-    HTTPClient client;
-    client.begin(settings->api->endpoint_uri);
-    client.addHeader("Content-Type", "application/json");
+    //HTTPClient client;
+    //client.begin(settings->api->endpoint_uri);
+    //client.addHeader("Content-Type", "application/json");
     String json = parse_json(settings->api->username, settings->api->token, data);
     Serial.println(json);
+    Serial.println("TEst");
     return true;
 }
 
-String parse_json(char* username, char* token, LinkedList<long> data) {
+String parse_json(const char* username, const char* token, LinkedList<long> data) {
     String d = "";
     for(int i = 0; i < data.size(); i++) {
         d += String(data.get(i)) + ",";

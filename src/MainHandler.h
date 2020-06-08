@@ -1,14 +1,14 @@
-#ifndef GeigerCounter_H
-#define GeigerCounter_H
+#ifndef GEIGERCOUNTER_MAIN_HANDLER_H
+#define GEIGERCOUNTER_MAIN_HANDLER_H
 
 #include <Arduino.h>
 #include <SPI.h>
-#include "BluetoothServer.h"
+#include "./ble/BluetoothServer.h"
 #include "LinkedList.h"
-#include "WiFiHandler.h"
-#include "API.h"
+#include "./wifi/WiFiHandler.h"
+#include "./wifi/API.h"
 #include "Settings.h"
-#include "Display.h"
+#include "./devices/ControllerDisplay.h"
 
 #define GC_LOG_PERIOD 5000
 #define GC_LOG_SIZE 500
@@ -20,11 +20,11 @@ enum ButtonState {
     RUNNING
 };
 
-class GeigerCounter {
+class MainHandler {
 
 public:
 
-    static void setup(int GEIGER_PIN, BluetoothServer* server, WiFiHandler* handler);
+    static void setup(int GEIGER_PIN, struct Settings* settings, BluetoothServer* server, WiFiHandler* handler);
     static float get_microsievert();
     static unsigned int get_counts_per_minute();
     static void loop();
@@ -35,6 +35,7 @@ public:
     static void start_wifi();
     static void stop_wifi();
     static void toggle_wifi();
+    static struct Settings* get_settings();
 
 private:
 

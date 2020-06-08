@@ -1,22 +1,22 @@
-#include "Display.h"
+#include "ControllerDisplay.h"
 
-DisplayState Display::state = STATISTIC;
-bool Display::ble_active = false;
-bool Display::wifi_active = false;
-float Display::battery_charge = 100.0;
-bool Display::charging = false;
-float Display::msv = 0.0;
-int Display::cpm = 0;
-String Display::ble_connection_code = "";
-String Display::info_connection = "";
+ControllerDisplayState ControllerDisplay::state = STATISTIC;
+bool ControllerDisplay::ble_active = false;
+bool ControllerDisplay::wifi_active = false;
+float ControllerDisplay::battery_charge = 100.0;
+bool ControllerDisplay::charging = false;
+float ControllerDisplay::msv = 0.0;
+int ControllerDisplay::cpm = 0;
+String ControllerDisplay::ble_connection_code = "";
+String ControllerDisplay::info_connection = "";
 
-void Display::setup()
+void ControllerDisplay::setup()
 {
     Heltec.begin(true, false, true);
     randomSeed(analogRead(0));
 }
 
-void Display::loop() 
+void ControllerDisplay::loop() 
 {
 
     Heltec.display->clear();
@@ -51,83 +51,83 @@ void Display::loop()
 
 }
 
-void Display::showBLE() {
+void ControllerDisplay::showBLE() {
     ble_active = true;
 }
 
-void Display::hideBLE() {
+void ControllerDisplay::hideBLE() {
     ble_active = false;
 }
 
-void Display::showWiFi(){
+void ControllerDisplay::showWiFi(){
     wifi_active = true;
 }
 
-void Display::hideWiFi() {
+void ControllerDisplay::hideWiFi() {
     wifi_active = false;
 }
 
-void Display::updateBattery(float percentage)
+void ControllerDisplay::updateBattery(float percentage)
 {
     battery_charge = percentage;
 }
 
-void Display::updateStatistic(float _msv, int _cpm)
+void ControllerDisplay::updateStatistic(float _msv, int _cpm)
 {
     msv = _msv;
     cpm = _cpm;
 }
 
-void Display::updateBLECode(String code)
+void ControllerDisplay::updateBLECode(String code)
 {
     ble_connection_code = code;
 }
 
-void Display::updateNewConnection(String connection)
+void ControllerDisplay::updateNewConnection(String connection)
 {
     info_connection = connection;
 }
 
-void Display::changeState(DisplayState _state) {
+void ControllerDisplay::changeState(ControllerDisplayState _state) {
     state = _state;
 }
 
-void Display::toggleState() {
+void ControllerDisplay::toggleState() {
     
 }
 
-void Display::printBLEIcon() 
+void ControllerDisplay::printBLEIcon() 
 {
     Heltec.display->drawXbm(2, 2, BT_width, BT_height, BT_bits);
 }
 
-void Display::printWiFiIcon() 
+void ControllerDisplay::printWiFiIcon() 
 {
     int width = ble_active ? 12 : 2;
     Heltec.display->drawXbm(width, 2, WIFI_width, WIFI_height, WIFI_bits);
 }
 
-void Display::printBattery()
+void ControllerDisplay::printBattery()
 {
     Heltec.display->drawXbm(106, 2, BAT_width, BAT_height, BAT_bits);
 }
 
-void Display::renderStatistics()
+void ControllerDisplay::renderStatistics()
 {
     Heltec.display->setFont(ArialMT_Plain_16);
     Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
-    Heltec.display->drawString(2, 24, "mSv/h:    " + String(GeigerCounter::get_microsievert()));
-    Heltec.display->drawString(2, 44, "CPM:      " + String(GeigerCounter::get_counts_per_minute()));
+    Heltec.display->drawString(2, 24, "mSv/h:    " + String(MainHandler::get_microsievert()));
+    Heltec.display->drawString(2, 44, "CPM:      " + String(MainHandler::get_counts_per_minute()));
 }
 
-void Display::renderBLECode()
+void ControllerDisplay::renderBLECode()
 {
     Heltec.display->setFont(ArialMT_Plain_24);
     Heltec.display->setTextAlignment(TEXT_ALIGN_CENTER);
     Heltec.display->drawString(32, 64, ble_connection_code);
 }
 
-void Display::renderNewConnection()
+void ControllerDisplay::renderNewConnection()
 {
     Heltec.display->setFont(ArialMT_Plain_16);
     Heltec.display->setTextAlignment(TEXT_ALIGN_CENTER);

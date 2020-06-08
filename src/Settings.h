@@ -1,19 +1,19 @@
-#ifndef _SETTINGS_H
-#define _SETTINGS_H
+#ifndef GEIGERCOUNTER_SETTINGS_H
+#define GEIGERCOUNTER_SETTINGS_H
 
 #include <Arduino.h>
-#include "API.h"
+#include "./wifi/API.h"
 #include "StaticMemory.h"
 
 struct APISettings {
-    char* endpoint_uri;
-    char* username;
-    char* token;
+    const char* endpoint_uri;
+    const char* username;
+    const char* token;
 };
 
 struct Settings {
-    char* ssid;
-    char* password;
+    const char* ssid;
+    const char* password;
     bool auditive_counter;
     struct APISettings* api;
 };

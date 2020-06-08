@@ -1,12 +1,12 @@
 #include "WiFiHandler.h"
 
-char* WiFiHandler::ssid = nullptr;
-char* WiFiHandler::password = nullptr;
-char* WiFiHandler::backend_url = nullptr;
+const char* WiFiHandler::ssid = nullptr;
+const char* WiFiHandler::password = nullptr;
+const char* WiFiHandler::backend_url = nullptr;
 bool WiFiHandler::connected = false;
 int WiFiHandler::interval = 3600;
 
-void WiFiHandler::setup(char* ssid, char* password, char* backend_url, int interval) {
+void WiFiHandler::setup(const char* ssid, const char* password, const char* backend_url, int interval) {
 
     ssid = ssid;
     password = password;
