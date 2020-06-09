@@ -6,7 +6,7 @@
 #include "./../Settings.h"
 #include "./../LinkedList.h"
 
-bool send_data(struct Settings* settings, LinkedList<long> data);
-String parse_json(const char* username, const char* token, LinkedList<long> data);
+bool send_data(struct Settings* settings, LinkedList<long>* data);
+String parse_json(const char* username, const char* token, LinkedList<long>* data);
 
 #endif

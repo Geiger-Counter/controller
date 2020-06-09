@@ -1,6 +1,6 @@
 #include "API.h"
 
-bool send_data(struct Settings* settings, LinkedList<long> data) {
+bool send_data(struct Settings* settings, LinkedList<long>* data) {
     //HTTPClient client;
     //client.begin(settings->api->endpoint_uri);
     //client.addHeader("Content-Type", "application/json");
@@ -10,10 +10,10 @@ bool send_data(struct Settings* settings, LinkedList<long> data) {
     return true;
 }
 
-String parse_json(const char* username, const char* token, LinkedList<long> data) {
+String parse_json(const char* username, const char* token, LinkedList<long>* data) {
     String d = "";
-    for(int i = 0; i < data.size(); i++) {
-        d += String(data.get(i)) + ",";
+    for(int i = 0; i < data->size(); i++) {
+        d += String(data->get(i)) + ",";
     }
     d = d.substring(0, d.length() - 1);
     String json = "{\"username\":\"";

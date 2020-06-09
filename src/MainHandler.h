@@ -49,6 +49,7 @@ private:
     static struct Settings* settings;
 
     static float get_multiplier();
+    static int get_last_index();
 
 
 };

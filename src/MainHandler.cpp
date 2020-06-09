@@ -22,7 +22,7 @@ void MainHandler::setup(int GEIGER_PIN, struct Settings* settings, BluetoothServ
 void MainHandler::loop() {
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
-        //send_data(settings, detections);
+        send_data(settings, &detections);
         previous_ms = current_ms;
         int size = detections.size();
         float multiplier = get_multiplier();
@@ -126,11 +126,22 @@ float MainHandler::get_multiplier() {
     int size = detections.size();
     // need a minimum of 5 detections to get a "good" calculation on startup
     if(size > 5) {
-        // TODO: better appraisal of required data
-        int start = size > GC_LOG_SIZE ? size - 500 : 0;
+        // old calculation of stack
+        // int start = size > GC_LOG_SIZE ? size - 500 : 0;
+        // new calculation based on last 60 seconds
+        int start = get_last_index();
         // Multiplier = 60 sec / ((timestamp_last_detection - timestamp_start_of_detection) / 1000 ms)
         return 60.0 / ((detections.get(size - 1)- detections.get(start)) / 1000.0);
     }
     return 1.0;
+}
+
+int MainHandler::get_last_index() {
+    unsigned long sixty_sec_ago = millis() - 60000;
+    int i = detections.size() - 1;
+    while((detections.get(i) > sixty_sec_ago) && (i > 0)) {
+        i--;
+    }
+    return i;
 }
 

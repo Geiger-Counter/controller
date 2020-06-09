@@ -28,8 +28,7 @@ void BluetoothServer::start() {
         BLEService* data_service = server->createService(DATA_SERVICE_UUID);
         BLEService* settings_service = server->createService(SETTINGS_SERVICE_UUID);
 
-        build_characteristics(data_service, settings_service);        
-        ssid->setCallbacks(characteristicHandler);
+        build_characteristics(data_service, settings_service);      
 
         data_service->start();
         settings_service->start();
@@ -53,11 +52,23 @@ void BluetoothServer::stop() {
         delete server;
         delete cpm;
         delete msvh;
+        delete ssid;
+        delete password;
+        delete auditive;
+        delete endpoint;
+        delete username;
+        delete token;
         delete serviceHandler;
         delete characteristicHandler;
         server = nullptr;
         cpm = nullptr;
         msvh = nullptr;
+        ssid = nullptr;
+        password = nullptr;
+        auditive = nullptr;
+        endpoint = nullptr;
+        username = nullptr;
+        token = nullptr;
         serviceHandler = nullptr;
         characteristicHandler = nullptr;
         active = false;
@@ -95,79 +106,123 @@ void BluetoothServer::decay_impulse(unsigned long timestamp) {
     }
 }
 
-BLECharacteristic* BluetoothServer::create_ble_characteristic(BLEService* service, char* char_uuid, char* desc_uuid, char* name, int start)
+BLECharacteristic* BluetoothServer::create_ble_characteristic(struct CharacteristicTemplate tmpl)
 {
+    uint32_t permissions = BLECharacteristic::PROPERTY_NOTIFY;
+    if(tmpl.read) {
+        permissions = permissions | BLECharacteristic::PROPERTY_READ;
+    }
+    if(tmpl.write) {
+        permissions = permissions | BLECharacteristic::PROPERTY_WRITE;
+    }
     BLECharacteristic* characteristic = new BLECharacteristic(
-        char_uuid,
-        BLECharacteristic::PROPERTY_READ |
-        BLECharacteristic::PROPERTY_NOTIFY
+        tmpl.uuid,
+        permissions
     );
-    BLEDescriptor* descriptor = new BLEDescriptor(desc_uuid);
+    BLEDescriptor* descriptor = new BLEDescriptor(tmpl.desc_uuid);
 
-    service->addCharacteristic(characteristic);
-    char buf[16];
-    ltoa(start, buf, 10);
-    characteristic->setValue(buf);
+    tmpl.service->addCharacteristic(characteristic);
+    characteristic->setValue(tmpl.default_value);
     characteristic->addDescriptor(descriptor);
     characteristic->addDescriptor(new BLE2902());
-    descriptor->setValue(name);
+    descriptor->setValue(tmpl.desc);
+
+    if(tmpl.write) {
+        characteristic->setCallbacks(characteristicHandler);
+    }
 
     return characteristic;
 }
 
-void BluetoothServer::build_characteristics(BLEService* data, BLEService* settings) {
-    cpm = create_ble_characteristic(
-            data,
-            DATA_CPM_CHAR_UUID,
-            DATA_CPM_DEC_UUID,
-            "counts per minute"
-        );
-        msvh = create_ble_characteristic(
-            data,
-            DATA_MSV_CHAR_UUID,
-            DATA_MSV_DESC_UUID,
-            "microsievert per hour"
-        );
-        impulse = create_ble_characteristic(
-            data,
-            DATA_IMPULSE_CHAR_UUID,
-            DATA_IMPULSE_DEC_UUID,
-            "decay impulse"
-        );
-        auditive = create_ble_characteristic(
-            settings,
-            SETTINGS_AUDITITVE_CHAR_UUID,
-            SETTINGS_AUDITIVE_DEC_UUID,
-            "auditive"
-        );
-        username = create_ble_characteristic(
-            settings,
-            SETTINGS_USERNAME_CHAR_UUID,
-            SETTINGS_USERNAME_DEC_UUID,
-            "api endpoint username"
-        );
-        endpoint = create_ble_characteristic(
-            settings,
-            SETTINGS_ENDPOINT_CHAR_UUID,
-            SETTINGS_ENDPOINT_DEC_UUID,
-            "api endpoint uri"
-        );
-        token = create_ble_characteristic(
-            settings,
-            SETTINGS_TOKEN_CHAR_UUID,
-            SETTINGS_TOKEN_DEC_UUID,
-            "access token for api"
-        );
-        ssid = create_ble_characteristic(
-            settings,
-            SETTINGS_SSID_CHAR_UUID,
-            SETTINGS_SSID_DEC_UUID,
-            "ssid value for api"
-        );
-        password = create_ble_characteristic(
-            settings,
-            SETTINGS_PASSWORD_CHAR_UUID,
-            SETTINGS_PASSWORD_DEC_UUID,
-            "wifi password"
-        );
+void BluetoothServer::build_characteristics(BLEService* data_service, BLEService* settings_service) {
+    cpm = create_ble_characteristic({
+        data_service,
+        DATA_CPM_CHAR_UUID,
+        DATA_CPM_DESC_UUID,
+        "counts per minute",
+        "-1",
+        true,
+        false,
+        true
+    });
+    msvh = create_ble_characteristic({
+        data_service,
+        DATA_MSV_CHAR_UUID,
+        DATA_MSV_DESC_UUID,
+        "microsievert per hour",
+        "-1",
+        true,
+        false,
+        true
+    });
+    impulse = create_ble_characteristic({
+        data_service,
+        DATA_IMPULSE_CHAR_UUID,
+        DATA_IMPULSE_DESC_UUID,
+        "decay_impulse",
+        "-1",
+        true,
+        false,
+        true
+    });
+    auditive = create_ble_characteristic({
+        settings_service,
+        SETTINGS_AUDITIVE_CHAR_UUID,
+        SETTINGS_AUDITIVE_DESC_UUID,
+        "auditive setting",
+        settings->auditive_counter ? "true" : "false",
+        true,
+        true,
+        true
+    });
+    username = create_ble_characteristic({
+        settings_service,
+        SETTINGS_USERNAME_CHAR_UUID,
+        SETTINGS_USERNAME_DESC_UUID,
+        "api endpoint username",
+        settings->api->username,
+        true,
+        true,
+        true
+    });
+    endpoint = create_ble_characteristic({
+        settings_service,
+        SETTINGS_ENDPOINT_CHAR_UUID,
+        SETTINGS_ENDPOINT_DESC_UUID,
+        "auditive setting",
+        settings->api->endpoint_uri,
+        true,
+        true,
+        true
+    });
+    token = create_ble_characteristic({
+        settings_service,
+        SETTINGS_TOKEN_CHAR_UUID,
+        SETTINGS_TOKEN_DESC_UUID,
+        "access token for api",
+        "",
+        false,
+        true,
+        true
+    });
+    ssid = create_ble_characteristic({
+        settings_service,
+        SETTINGS_SSID_CHAR_UUID,
+        SETTINGS_SSID_DESC_UUID,
+        "ssid for wifi connection",
+        settings->ssid,
+        true,
+        true,
+        true
+    }); 
+    password = create_ble_characteristic({
+        settings_service,
+        SETTINGS_PASSWORD_CHAR_UUID,
+        SETTINGS_PASSWORD_DESC_UUID,
+        "password for wifi connection",
+        "",
+        false,
+        true,
+        true
+    });
 }

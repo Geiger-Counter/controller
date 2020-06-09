@@ -32,6 +32,6 @@ bool save_settings(struct Settings* settings) {
     StaticMemory::write(MemoryRegister::API_TOKEN, api->token);
     StaticMemory::write(MemoryRegister::API_ENDPOINT, api->endpoint_uri);
 
-    return true;
+    return StaticMemory::save();
 
 }

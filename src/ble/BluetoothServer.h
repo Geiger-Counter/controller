@@ -10,6 +10,17 @@
 #include "CharacteristicCallbackHandler.h"
 #include "BLEUUIDs.h"
 
+struct CharacteristicTemplate {
+    BLEService* service;
+    const char* uuid;
+    const char* desc_uuid;
+    const char* desc;
+    const char* default_value;
+    bool read;
+    bool write;
+    bool notify;
+};
+
 /**
  * BluetoothServer Class
  *
@@ -52,7 +63,7 @@ private:
     bool active;
     char* ble_code;
 
-    BLECharacteristic* create_ble_characteristic(BLEService* service, char* char_uuid, char* desc_uuid, char* name, int start = 0);
+    BLECharacteristic* create_ble_characteristic(struct CharacteristicTemplate tmpl);
     void build_characteristics(BLEService* api, BLEService* settings);
 
 };
