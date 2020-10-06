@@ -1,6 +1,6 @@
 #include "MainHandler.h"
 
-unsigned int MainHandler::cpm = 0;
+int MainHandler::cpm = 0;
 unsigned long MainHandler::previous_ms = 0;
 BluetoothServer* MainHandler::bluetoothServer = nullptr;
 ButtonState MainHandler::bleState = WAIT;
@@ -22,17 +22,15 @@ void MainHandler::setup(int GEIGER_PIN, struct Settings* settings, BluetoothServ
 void MainHandler::loop() {
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
-        send_data(settings, &detections);
+        //send_data(settings, &detections);
         previous_ms = current_ms;
-        int size = detections.size();
-        float multiplier = get_multiplier();
-        cpm = size * multiplier;
+        cpm = calculate_cpm(&detections);
 
         Serial.print("CPM: ");
         Serial.print(cpm);
         Serial.print(" | mSv/h: ");
-        Serial.println(get_microsievert());
-        bluetoothServer->send_data(get_microsievert(), cpm);
+        Serial.println(calculate_msvh(cpm));
+        bluetoothServer->send_data(calculate_msvh(cpm), cpm);
         if(wifiState == RUNNING) {
             //API::send_data()
         }
@@ -112,36 +110,12 @@ void MainHandler::impulse() {
     bluetoothServer->decay_impulse(time);
 }
 
-unsigned int MainHandler::get_counts_per_minute() {
+int MainHandler::get_counts_per_minute() {
     return cpm;
 }
 
 float MainHandler::get_microsievert() {
     float msv = (cpm/151.0);
     return msv;
-}
-
-float MainHandler::get_multiplier() {
-    // only last 500 entries
-    int size = detections.size();
-    // need a minimum of 5 detections to get a "good" calculation on startup
-    if(size > 5) {
-        // old calculation of stack
-        // int start = size > GC_LOG_SIZE ? size - 500 : 0;
-        // new calculation based on last 60 seconds
-        int start = get_last_index();
-        // Multiplier = 60 sec / ((timestamp_last_detection - timestamp_start_of_detection) / 1000 ms)
-        return 60.0 / ((detections.get(size - 1)- detections.get(start)) / 1000.0);
-    }
-    return 1.0;
-}
-
-int MainHandler::get_last_index() {
-    unsigned long sixty_sec_ago = millis() - 60000;
-    int i = detections.size() - 1;
-    while((detections.get(i) > sixty_sec_ago) && (i > 0)) {
-        i--;
-    }
-    return i;
 }
 

@@ -9,6 +9,7 @@
 #include "./wifi/API.h"
 #include "Settings.h"
 #include "./devices/ControllerDisplay.h"
+#include "Calculator.h"
 
 #define GC_LOG_PERIOD 5000
 #define GC_LOG_SIZE 500
@@ -26,7 +27,7 @@ public:
 
     static void setup(int GEIGER_PIN, struct Settings* settings, BluetoothServer* server, WiFiHandler* handler);
     static float get_microsievert();
-    static unsigned int get_counts_per_minute();
+    static int get_counts_per_minute();
     static void loop();
     static void impulse();
     static void start_bluetooth();
@@ -39,7 +40,7 @@ public:
 
 private:
 
-    static unsigned int cpm;
+    static int cpm;
     static unsigned long previous_ms;
     static LinkedList<long> detections;
     static ButtonState bleState;
@@ -47,10 +48,6 @@ private:
     static BluetoothServer* bluetoothServer;
     static WiFiHandler* wifiHandler;
     static struct Settings* settings;
-
-    static float get_multiplier();
-    static int get_last_index();
-
 
 };
 

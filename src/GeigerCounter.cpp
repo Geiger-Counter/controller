@@ -21,6 +21,7 @@ void GeigerCounter::setup() {
     ControllerDisplay::setup();
 
     bleButton = new ControllerButton(BLUETOOTH_BTN_PIN, []() {
+        Serial.println("Button BLE Click");
         MainHandler::toggle_bluetooth();
     });
     wifiButton = new ControllerButton(WIFI_BTN_PIN, []() {
