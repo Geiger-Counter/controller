@@ -7,9 +7,9 @@ ButtonState MainHandler::bleState = WAIT;
 ButtonState MainHandler::wifiState = WAIT;
 LinkedList<long> MainHandler::detections = LinkedList<long>();
 WiFiHandler* MainHandler::wifiHandler = nullptr;
-struct Settings* MainHandler::settings = nullptr;
+Settings* MainHandler::settings = nullptr;
 
-void MainHandler::setup(int GEIGER_PIN, struct Settings* settings, BluetoothServer* server, WiFiHandler *handler) {
+void MainHandler::setup(int GEIGER_PIN, Settings* settings, BluetoothServer* server, WiFiHandler *handler) {
 
     bluetoothServer = server;
     wifiHandler = handler;
@@ -35,20 +35,6 @@ void MainHandler::loop() {
             //API::send_data()
         }
     }
-    switch(bleState) {
-        case START:
-            bluetoothServer->start();
-            ControllerDisplay::showBLE();
-            bleState = WAIT;
-            break;
-        case STOP:
-            bluetoothServer->stop();
-            ControllerDisplay::hideBLE();
-            bleState = WAIT;
-            break;
-        default:
-            break;
-    }
     switch(wifiState) {
         case START:
             wifiHandler->on();
@@ -66,11 +52,14 @@ void MainHandler::loop() {
 }
 
 void MainHandler::start_bluetooth() {
-    bleState = START;
+    bluetoothServer->start();
+    Serial.println("Started");
+    ControllerDisplay::showBLE();
 }
 
 void MainHandler::stop_bluetooth() {
-    bleState = STOP;
+    bluetoothServer->stop();
+    ControllerDisplay::hideBLE();
 }
 
 void MainHandler::toggle_bluetooth() {
@@ -97,7 +86,7 @@ void MainHandler::toggle_wifi() {
     }
 }
 
-struct Settings* MainHandler::get_settings() {
+Settings* MainHandler::get_settings() {
     return settings;
 }
 

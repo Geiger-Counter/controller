@@ -5,20 +5,21 @@
 #include "./wifi/API.h"
 #include "StaticMemory.h"
 
-struct APISettings {
-    const char* endpoint_uri;
-    const char* username;
-    const char* token;
+class APISettings {
+    public: 
+        const char* endpoint_uri;
+        const char* username;
+        const char* token;
 };
 
-struct Settings {
-    const char* ssid;
-    const char* password;
-    bool auditive_counter;
-    struct APISettings* api;
+class Settings {
+    public: 
+        const char* ssid;
+        const char* password;
+        APISettings* api;
 };
 
-struct Settings* load_settings();
-bool save_settings(struct Settings* settings);
+Settings* load_settings();
+bool save_settings(Settings* settings);
 
 #endif

@@ -25,7 +25,7 @@ class MainHandler {
 
 public:
 
-    static void setup(int GEIGER_PIN, struct Settings* settings, BluetoothServer* server, WiFiHandler* handler);
+    static void setup(int GEIGER_PIN, Settings* settings, BluetoothServer* server, WiFiHandler* handler);
     static float get_microsievert();
     static int get_counts_per_minute();
     static void loop();
@@ -36,7 +36,7 @@ public:
     static void start_wifi();
     static void stop_wifi();
     static void toggle_wifi();
-    static struct Settings* get_settings();
+    static Settings* get_settings();
 
 private:
 
@@ -47,7 +47,7 @@ private:
     static ButtonState wifiState;
     static BluetoothServer* bluetoothServer;
     static WiFiHandler* wifiHandler;
-    static struct Settings* settings;
+    static Settings* settings;
 
 };
 

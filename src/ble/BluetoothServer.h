@@ -6,6 +6,7 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <BLE2902.h>
+#include "./../Settings.h"
 #include "ServiceCallbackHandler.h"
 #include "CharacteristicCallbackHandler.h"
 #include "BLEUUIDs.h"
@@ -35,7 +36,7 @@ class BluetoothServer
 
 public:
 
-    BluetoothServer(struct Settings* settings, bool start = false);
+    BluetoothServer(Settings* _settings, bool start = false);
     ~BluetoothServer();
 
     void send_data(float msvh, int cpm);
@@ -46,7 +47,7 @@ public:
 
 private:
 
-    struct Settings* settings;
+    Settings* settings;
 
     BLEServer* server;
     BLECharacteristic* cpm;

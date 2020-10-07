@@ -1,8 +1,8 @@
 #include "BluetoothServer.h"
 
-BluetoothServer::BluetoothServer(struct Settings* settings, bool start) {
+BluetoothServer::BluetoothServer(Settings* _settings, bool start) {
 
-    settings = settings;
+    settings = _settings;
     active = false;
 
     if(start) {
@@ -12,37 +12,30 @@ BluetoothServer::BluetoothServer(struct Settings* settings, bool start) {
 }
 
 void BluetoothServer::start() {
-
     if(!active) {
-        active = true;
         Serial.print("BLE initialized: ");
         Serial.println(BLEDevice::getInitialized());
         BLEDevice::init("GeigerCounter BT Server");
         Serial.println("BluetoothServer starting...");
         server = BLEDevice::createServer();
-
         serviceHandler = new ServiceCallbackHandler();
         characteristicHandler = new CharacteristicCallbackHandler(settings);
         server->setCallbacks(serviceHandler);
-
         BLEService* data_service = server->createService(DATA_SERVICE_UUID);
         BLEService* settings_service = server->createService(SETTINGS_SERVICE_UUID);
-
-        build_characteristics(data_service, settings_service);      
-
+        build_characteristics(data_service, settings_service);
         data_service->start();
         settings_service->start();
-
         BLEAdvertising* advertising = BLEDevice::getAdvertising();
         advertising->addServiceUUID(DATA_SERVICE_UUID);
         advertising->setScanResponse(true);
         advertising->setMinPreferred(0x06);
         advertising->setMinPreferred(0x12);
         BLEDevice::startAdvertising();
-
         Serial.println("BluetoothServer running");
+        active = true;
     }
-
+    Serial.println("End");
 }
 
 void BluetoothServer::stop() {
@@ -120,17 +113,14 @@ BLECharacteristic* BluetoothServer::create_ble_characteristic(struct Characteris
         permissions
     );
     BLEDescriptor* descriptor = new BLEDescriptor(tmpl.desc_uuid);
-
     tmpl.service->addCharacteristic(characteristic);
     characteristic->setValue(tmpl.default_value);
     characteristic->addDescriptor(descriptor);
     characteristic->addDescriptor(new BLE2902());
     descriptor->setValue(tmpl.desc);
-
     if(tmpl.write) {
         characteristic->setCallbacks(characteristicHandler);
     }
-
     return characteristic;
 }
 
@@ -165,16 +155,6 @@ void BluetoothServer::build_characteristics(BLEService* data_service, BLEService
         false,
         true
     });
-    auditive = create_ble_characteristic({
-        settings_service,
-        SETTINGS_AUDITIVE_CHAR_UUID,
-        SETTINGS_AUDITIVE_DESC_UUID,
-        "auditive setting",
-        settings->auditive_counter ? "true" : "false",
-        true,
-        true,
-        true
-    });
     username = create_ble_characteristic({
         settings_service,
         SETTINGS_USERNAME_CHAR_UUID,
@@ -189,7 +169,7 @@ void BluetoothServer::build_characteristics(BLEService* data_service, BLEService
         settings_service,
         SETTINGS_ENDPOINT_CHAR_UUID,
         SETTINGS_ENDPOINT_DESC_UUID,
-        "auditive setting",
+        "api endpoint uri",
         settings->api->endpoint_uri,
         true,
         true,

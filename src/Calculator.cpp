@@ -2,6 +2,9 @@
 
 int calculate_cpm_approach(LinkedList<long>* elements) {
     long timediff = elements->get(elements->size() - 1) - elements->get(0);
+    if(timediff == 0) {
+        return 0;
+    }
     double factor = 60000 / timediff;
     return elements->size() * factor;
 }

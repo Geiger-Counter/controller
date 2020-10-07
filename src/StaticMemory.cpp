@@ -6,6 +6,21 @@ bool StaticMemory::setup()
     return true;
 }
 
+void StaticMemory::define() {
+    EEPROM.write(0, 1);
+    save();
+}
+
+void StaticMemory::undefine() {
+    EEPROM.write(0, 0);
+    save();
+}
+
+bool StaticMemory::is_defined() {
+    uint8_t defined = EEPROM.read(0);
+    return defined == 1;
+}
+
 bool StaticMemory::write(MemoryRegister reg, String data)
 {
     clear(reg);
@@ -13,7 +28,7 @@ bool StaticMemory::write(MemoryRegister reg, String data)
     if(length > REGISTER_SIZE) {
         return false;
     }
-    byte* converted = new byte[REGISTER_SIZE];
+    byte* converted = (byte*) malloc(REGISTER_SIZE * sizeof(byte));
     for(int i = 0; i < REGISTER_SIZE; i++) {
         if(i < length) {
             EEPROM.write(i + reg, (byte)data.charAt(i));
@@ -21,20 +36,26 @@ bool StaticMemory::write(MemoryRegister reg, String data)
             EEPROM.write(i + reg, (byte)'\0');
         }
     }
-
+    define();
     return true;
 }
 
 char* StaticMemory::read(MemoryRegister reg)
 {
-    char* tmp = new char[REGISTER_SIZE];
-    for(int i = 0; i < REGISTER_SIZE; i++) {
-        int read = (int) EEPROM.read(i + reg);
-        if(read == 255 || read == 0) {
-            tmp[i] = '\0';
-            break;
+    char* tmp = (char*) malloc(REGISTER_SIZE * sizeof(char));
+    if(!is_defined()) {
+        tmp = "-1";
+    } else {
+        char* tmp = new char[REGISTER_SIZE];
+        for(int i = 0; i < REGISTER_SIZE; i++) {
+            int read = (int) EEPROM.read(i + reg);
+            if(read == 255 || read == 0) {
+                tmp[i] = '\0';
+                break;
+            }
+            Serial.println(read);
+            tmp[i] = (char) read;
         }
-        tmp[i] = (char) read;
     }
     return tmp;
 }
@@ -44,10 +65,10 @@ bool StaticMemory::save()
     return EEPROM.commit();
 }
 
-void StaticMemory::clear(MemoryRegister reg)
+void StaticMemory::clear(int max = 130)
 {
-    for(int i = reg; i < reg + REGISTER_SIZE; i++) {
-        EEPROM.write(i, (byte)'\0');
+    for(int i = 0; i < max; i++) {
+        EEPROM.write(i, 0);
     }
-    save();    
+    undefine(); 
 }

@@ -12,13 +12,13 @@ class CharacteristicCallbackHandler : public BLECharacteristicCallbacks
 
 public:
 
-    CharacteristicCallbackHandler(struct Settings* settings);
+    CharacteristicCallbackHandler(Settings* _settings);
     ~CharacteristicCallbackHandler();
     void onWrite(BLECharacteristic* characteristic);
 
 private:
 
-    struct Settings* settings;
+    Settings* settings;
 
 };
 

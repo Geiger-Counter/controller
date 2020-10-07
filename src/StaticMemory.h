@@ -7,12 +7,12 @@
 #define REGISTER_SIZE 32
 
 enum MemoryRegister {
-    SSID = 0,
-    PASSWORD = 32,
-    API_ENDPOINT = 64,
-    API_USER = 96,
-    API_TOKEN = 128,
-    AUDITIVE_COUNTER = 164
+    DEFINED = 0,
+    SSID = 1,
+    PASSWORD = 33,
+    API_ENDPOINT = 65,
+    API_USER = 97,
+    API_TOKEN = 129
 };
 
 /**
@@ -31,11 +31,14 @@ public:
      * @return false 
      */
     static bool setup();
+    static void define();
+    static void undefine();
+    static bool is_defined();
 
     static bool write(MemoryRegister reg, String data);
     static char* read(MemoryRegister reg);
     static bool save();
-    static void clear(MemoryRegister reg);
+    static void clear(int max);
 
 };
 

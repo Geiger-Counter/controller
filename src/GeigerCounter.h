@@ -2,6 +2,7 @@
 #define GEIGERCOUNTER_MAIN_APPLICATION_H
 
 #include <Arduino.h>
+#include "Settings.h"
 #include "./devices/ControllerDisplay.h"
 #include "MainHandler.h"
 #include "./ble/BluetoothServer.h"
@@ -32,6 +33,8 @@ public:
     void setup();
     void loop();
 
+    static void execute_isr(int index);
+
 private:
 
     ControllerButton* bleButton;
@@ -41,6 +44,10 @@ private:
     ControllerLED* greenLED;
     ControllerLED* redLED;
     ControllerLED* statusLED;
+
+    static volatile int isr[3];
+    static void check_isr();
+    
 
 };
 
