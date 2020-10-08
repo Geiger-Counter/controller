@@ -3,11 +3,8 @@
 volatile int GeigerCounter::isr[3] = {0,0,0};
 
 GeigerCounter::GeigerCounter() {
-    greenLED = nullptr;
-    redLED = nullptr;
     bleButton = nullptr;
     wifiButton = nullptr;
-    toggleButton = nullptr;
 }
 
 GeigerCounter::~GeigerCounter() {}
@@ -27,13 +24,6 @@ void GeigerCounter::setup() {
     wifiButton = new ControllerButton(WIFI_BTN_PIN, []() {
         GeigerCounter::execute_isr(1);
     });
-    toggleButton = new ControllerButton(TOGGLE_BTN_PIN, []() {
-        GeigerCounter::execute_isr(2);
-    });
-    greenLED = new ControllerLED(GREEN_LED_PIN);
-    redLED = new ControllerLED(RED_LED_PIN);
-
-    greenLED->on();
 
     MainHandler::setup(GEIGER_COUNTER_PIN, settings, serverPtr, nullptr);
 }

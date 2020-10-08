@@ -13,12 +13,19 @@ public:
     void on();
     void off();
     void toggle();
+    void blink(int interval, int times);
+    void loop();
     bool is_on();
 
 private:
 
     int pin;
     bool active;
+    bool blinking;
+    int interval;
+    int times;
+    int state;
+    unsigned long previous;
 
 };
 

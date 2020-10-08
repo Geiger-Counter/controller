@@ -116,7 +116,7 @@ void ControllerDisplay::renderStatistics()
 {
     Heltec.display->setFont(ArialMT_Plain_16);
     Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
-    Heltec.display->drawString(2, 24, "mSv/h:    " + String(MainHandler::get_microsievert()));
+    Heltec.display->drawString(2, 24, "µSv/h:    " + String(MainHandler::get_microsievert()));
     Heltec.display->drawString(2, 44, "CPM:      " + String(MainHandler::get_counts_per_minute()));
 }
 

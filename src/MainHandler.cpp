@@ -8,28 +8,41 @@ ButtonState MainHandler::wifiState = WAIT;
 LinkedList<long> MainHandler::detections = LinkedList<long>();
 WiFiHandler* MainHandler::wifiHandler = nullptr;
 Settings* MainHandler::settings = nullptr;
+ControllerRGBLED* MainHandler::rgbLED = nullptr;
+ControllerLED* MainHandler::statusLED = nullptr;
 
-void MainHandler::setup(int GEIGER_PIN, Settings* settings, BluetoothServer* server, WiFiHandler *handler) {
+void MainHandler::setup(int GEIGER_PIN, Settings* _settings, BluetoothServer* server, WiFiHandler *handler) {
 
     bluetoothServer = server;
     wifiHandler = handler;
-    settings = settings;
+    settings = _settings;
+    rgbLED = new ControllerRGBLED(RED_LED_PIN, GREEN_LED_PIN, BLUE_LED_PIN);
+    statusLED = new ControllerLED(ON_OFF_LED_PIN);
 
     attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
 
 }
 
 void MainHandler::loop() {
+    statusLED->loop();
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
-        //send_data(settings, &detections);
         previous_ms = current_ms;
         cpm = calculate_cpm(&detections);
+        float msvh = calculate_msvh(cpm);
+
+        if(msvh < 11) {
+            rgbLED->on(false,true,false);
+        } else if(msvh >= 11 && msvh < 57) {
+            rgbLED->on(true, true, false);
+        } else {
+            rgbLED->on(true,false,false);
+        }
 
         Serial.print("CPM: ");
         Serial.print(cpm);
         Serial.print(" | mSv/h: ");
-        Serial.println(calculate_msvh(cpm));
+        Serial.println(msvh);
         bluetoothServer->send_data(calculate_msvh(cpm), cpm);
         if(wifiState == RUNNING) {
             //API::send_data()
@@ -91,6 +104,7 @@ Settings* MainHandler::get_settings() {
 }
 
 void MainHandler::impulse() {
+    statusLED->blink(500, 1);
     unsigned long time = millis();
     detections.add(time);
     if(detections.size() > 999) {

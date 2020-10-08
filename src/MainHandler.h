@@ -9,10 +9,17 @@
 #include "./wifi/API.h"
 #include "Settings.h"
 #include "./devices/ControllerDisplay.h"
+#include "./devices/ControllerRGBLED.h"
+#include "./devices/ControllerLED.h"
 #include "Calculator.h"
 
 #define GC_LOG_PERIOD 5000
 #define GC_LOG_SIZE 500
+
+#define ON_OFF_LED_PIN 13
+#define RED_LED_PIN 12
+#define BLUE_LED_PIN 14
+#define GREEN_LED_PIN 27
 
 enum ButtonState {
     START,
@@ -48,6 +55,8 @@ private:
     static BluetoothServer* bluetoothServer;
     static WiFiHandler* wifiHandler;
     static Settings* settings;
+    static ControllerLED* statusLED;
+    static ControllerRGBLED* rgbLED;
 
 };
 
