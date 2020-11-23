@@ -4,18 +4,13 @@ int MainHandler::cpm = 0;
 unsigned long MainHandler::previous_ms = 0;
 BluetoothServer* MainHandler::bluetoothServer = nullptr;
 ButtonState MainHandler::bleState = WAIT;
-ButtonState MainHandler::wifiState = WAIT;
 LinkedList<long> MainHandler::detections = LinkedList<long>();
-WiFiHandler* MainHandler::wifiHandler = nullptr;
-Settings* MainHandler::settings = nullptr;
 ControllerRGBLED* MainHandler::rgbLED = nullptr;
 ControllerLED* MainHandler::statusLED = nullptr;
 
-void MainHandler::setup(int GEIGER_PIN, Settings* _settings, BluetoothServer* server, WiFiHandler *handler) {
+void MainHandler::setup(int GEIGER_PIN, BluetoothServer* server) {
 
     bluetoothServer = server;
-    wifiHandler = handler;
-    settings = _settings;
     rgbLED = new ControllerRGBLED(RED_LED_PIN, GREEN_LED_PIN, BLUE_LED_PIN);
     statusLED = new ControllerLED(ON_OFF_LED_PIN);
 
@@ -44,23 +39,6 @@ void MainHandler::loop() {
         Serial.print(" | mSv/h: ");
         Serial.println(msvh);
         bluetoothServer->send_data(calculate_msvh(cpm), cpm);
-        if(wifiState == RUNNING) {
-            //API::send_data()
-        }
-    }
-    switch(wifiState) {
-        case START:
-            wifiHandler->on();
-            ControllerDisplay::showWiFi();
-            wifiState = RUNNING;
-            break;
-        case STOP:
-            wifiHandler->off();
-            ControllerDisplay::hideWiFi();
-            wifiState = WAIT;
-            break;
-        default:
-            break;
     }
 }
 
@@ -81,26 +59,6 @@ void MainHandler::toggle_bluetooth() {
     } else {
         start_bluetooth();
     }
-}
-
-void MainHandler::start_wifi() {
-    wifiState = START;
-}
-
-void MainHandler::stop_wifi() {
-    wifiState = STOP;
-}
-
-void MainHandler::toggle_wifi() {
-    if(wifiHandler->is_connected()) {
-        stop_wifi();
-    } else {
-        start_wifi();
-    }
-}
-
-Settings* MainHandler::get_settings() {
-    return settings;
 }
 
 void MainHandler::impulse() {

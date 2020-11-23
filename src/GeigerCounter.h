@@ -2,7 +2,6 @@
 #define GEIGERCOUNTER_MAIN_APPLICATION_H
 
 #include <Arduino.h>
-#include "Settings.h"
 #include "./devices/ControllerDisplay.h"
 #include "MainHandler.h"
 #include "./ble/BluetoothServer.h"
@@ -11,7 +10,7 @@
 #include "./devices/ControllerRGBLED.h"
 
 #define BLUETOOTH_BTN_PIN 19
-#define WIFI_BTN_PIN 23
+#define SIGNAL_TOGGLE_BTN_PIN 23
 
 #define GEIGER_COUNTER_PIN 18
 
@@ -35,7 +34,7 @@ public:
 private:
 
     ControllerButton* bleButton;
-    ControllerButton* wifiButton;
+    ControllerButton* signalButton;
 
     static volatile int isr[3];
     static void check_isr();

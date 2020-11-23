@@ -4,7 +4,6 @@ volatile int GeigerCounter::isr[3] = {0,0,0};
 
 GeigerCounter::GeigerCounter() {
     bleButton = nullptr;
-    wifiButton = nullptr;
 }
 
 GeigerCounter::~GeigerCounter() {}
@@ -13,19 +12,18 @@ void GeigerCounter::setup() {
     Serial.begin(115200);
     Serial.println("GeigerCounter started");
 
-    Settings* settings = load_settings();
-
-    BluetoothServer* serverPtr = new BluetoothServer(settings);
+    BluetoothServer* serverPtr = new BluetoothServer();
     ControllerDisplay::setup();
 
     bleButton = new ControllerButton(BLUETOOTH_BTN_PIN, []() {
         GeigerCounter::execute_isr(0);
     });
-    wifiButton = new ControllerButton(WIFI_BTN_PIN, []() {
+
+    signalButton = new ControllerButton(SIGNAL_TOGGLE_BTN_PIN, []() {
         GeigerCounter::execute_isr(1);
     });
 
-    MainHandler::setup(GEIGER_COUNTER_PIN, settings, serverPtr, nullptr);
+    MainHandler::setup(GEIGER_COUNTER_PIN, serverPtr);
 }
 
 void GeigerCounter::loop() {
@@ -44,9 +42,8 @@ void GeigerCounter::check_isr() {
             switch(i) {
                 case 0: MainHandler::toggle_bluetooth();
                     break;
-                case 1: MainHandler::toggle_wifi();
-                    break;
-                case 2: ControllerDisplay::toggleState();
+                case 1: 
+                    //TODO: enable Audit
                     break;
                 default: break;          
             }

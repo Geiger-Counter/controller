@@ -6,9 +6,7 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <BLE2902.h>
-#include "./../Settings.h"
 #include "ServiceCallbackHandler.h"
-#include "CharacteristicCallbackHandler.h"
 #include "BLEUUIDs.h"
 
 struct CharacteristicTemplate {
@@ -36,7 +34,7 @@ class BluetoothServer
 
 public:
 
-    BluetoothServer(Settings* _settings, bool start = false);
+    BluetoothServer(bool start = false);
     ~BluetoothServer();
 
     void send_data(float msvh, int cpm);
@@ -47,20 +45,11 @@ public:
 
 private:
 
-    Settings* settings;
-
     BLEServer* server;
     BLECharacteristic* cpm;
     BLECharacteristic* msvh;
     BLECharacteristic* impulse;
-    BLECharacteristic* ssid;
-    BLECharacteristic* password;
-    BLECharacteristic* auditive;
-    BLECharacteristic* endpoint;
-    BLECharacteristic* username;
-    BLECharacteristic* token;
     ServiceCallbackHandler* serviceHandler;
-    CharacteristicCallbackHandler* characteristicHandler;
     bool active;
     char* ble_code;
 

@@ -1,8 +1,7 @@
 #include "BluetoothServer.h"
 
-BluetoothServer::BluetoothServer(Settings* _settings, bool start) {
+BluetoothServer::BluetoothServer(bool start) {
 
-    settings = _settings;
     active = false;
 
     if(start) {
@@ -19,7 +18,6 @@ void BluetoothServer::start() {
         Serial.println("BluetoothServer starting...");
         server = BLEDevice::createServer();
         serviceHandler = new ServiceCallbackHandler();
-        characteristicHandler = new CharacteristicCallbackHandler(settings);
         server->setCallbacks(serviceHandler);
         BLEService* data_service = server->createService(DATA_SERVICE_UUID);
         BLEService* settings_service = server->createService(SETTINGS_SERVICE_UUID);
@@ -45,25 +43,11 @@ void BluetoothServer::stop() {
         delete server;
         delete cpm;
         delete msvh;
-        delete ssid;
-        delete password;
-        delete auditive;
-        delete endpoint;
-        delete username;
-        delete token;
         delete serviceHandler;
-        delete characteristicHandler;
         server = nullptr;
         cpm = nullptr;
         msvh = nullptr;
-        ssid = nullptr;
-        password = nullptr;
-        auditive = nullptr;
-        endpoint = nullptr;
-        username = nullptr;
-        token = nullptr;
         serviceHandler = nullptr;
-        characteristicHandler = nullptr;
         active = false;
         Serial.println("BluetoothServer stopped");
     }
@@ -118,9 +102,6 @@ BLECharacteristic* BluetoothServer::create_ble_characteristic(struct Characteris
     characteristic->addDescriptor(descriptor);
     characteristic->addDescriptor(new BLE2902());
     descriptor->setValue(tmpl.desc);
-    if(tmpl.write) {
-        characteristic->setCallbacks(characteristicHandler);
-    }
     return characteristic;
 }
 
@@ -153,56 +134,6 @@ void BluetoothServer::build_characteristics(BLEService* data_service, BLEService
         "-1",
         true,
         false,
-        true
-    });
-    username = create_ble_characteristic({
-        settings_service,
-        SETTINGS_USERNAME_CHAR_UUID,
-        SETTINGS_USERNAME_DESC_UUID,
-        "api endpoint username",
-        settings->api->username,
-        true,
-        true,
-        true
-    });
-    endpoint = create_ble_characteristic({
-        settings_service,
-        SETTINGS_ENDPOINT_CHAR_UUID,
-        SETTINGS_ENDPOINT_DESC_UUID,
-        "api endpoint uri",
-        settings->api->endpoint_uri,
-        true,
-        true,
-        true
-    });
-    token = create_ble_characteristic({
-        settings_service,
-        SETTINGS_TOKEN_CHAR_UUID,
-        SETTINGS_TOKEN_DESC_UUID,
-        "access token for api",
-        "",
-        false,
-        true,
-        true
-    });
-    ssid = create_ble_characteristic({
-        settings_service,
-        SETTINGS_SSID_CHAR_UUID,
-        SETTINGS_SSID_DESC_UUID,
-        "ssid for wifi connection",
-        settings->ssid,
-        true,
-        true,
-        true
-    }); 
-    password = create_ble_characteristic({
-        settings_service,
-        SETTINGS_PASSWORD_CHAR_UUID,
-        SETTINGS_PASSWORD_DESC_UUID,
-        "password for wifi connection",
-        "",
-        false,
-        true,
         true
     });
 }

@@ -5,9 +5,6 @@
 #include <SPI.h>
 #include "./ble/BluetoothServer.h"
 #include "LinkedList.h"
-#include "./wifi/WiFiHandler.h"
-#include "./wifi/API.h"
-#include "Settings.h"
 #include "./devices/ControllerDisplay.h"
 #include "./devices/ControllerRGBLED.h"
 #include "./devices/ControllerLED.h"
@@ -32,7 +29,7 @@ class MainHandler {
 
 public:
 
-    static void setup(int GEIGER_PIN, Settings* settings, BluetoothServer* server, WiFiHandler* handler);
+    static void setup(int GEIGER_PIN, BluetoothServer* server);
     static float get_microsievert();
     static int get_counts_per_minute();
     static void loop();
@@ -40,10 +37,6 @@ public:
     static void start_bluetooth();
     static void stop_bluetooth();
     static void toggle_bluetooth();
-    static void start_wifi();
-    static void stop_wifi();
-    static void toggle_wifi();
-    static Settings* get_settings();
 
 private:
 
@@ -51,10 +44,7 @@ private:
     static unsigned long previous_ms;
     static LinkedList<long> detections;
     static ButtonState bleState;
-    static ButtonState wifiState;
     static BluetoothServer* bluetoothServer;
-    static WiFiHandler* wifiHandler;
-    static Settings* settings;
     static ControllerLED* statusLED;
     static ControllerRGBLED* rgbLED;
 
