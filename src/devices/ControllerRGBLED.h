@@ -12,6 +12,10 @@ public:
 
     void on(bool r, bool g, bool b);
     void off();
+    void green();
+    void yellow();
+    void red();
+    void blue();
     bool is_on();
 
 private:

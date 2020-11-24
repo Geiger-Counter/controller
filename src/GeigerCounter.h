@@ -9,11 +9,6 @@
 #include "./devices/ControllerLED.h"
 #include "./devices/ControllerRGBLED.h"
 
-#define BLUETOOTH_BTN_PIN 19
-#define SIGNAL_TOGGLE_BTN_PIN 23
-
-#define GEIGER_COUNTER_PIN 18
-
 /**
  * 
  * 
@@ -26,7 +21,7 @@ public:
     GeigerCounter();
     ~GeigerCounter();
 
-    void setup();
+    void setup(int IMP_PIN, int BLE_BTN_PIN, int SGN_BTN_PIN, int SNG_PIN, int R_PIN, int B_PIN, int G_PIN);
     void loop();
 
     static void execute_isr(int index);

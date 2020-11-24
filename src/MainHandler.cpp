@@ -6,20 +6,20 @@ BluetoothServer* MainHandler::bluetoothServer = nullptr;
 ButtonState MainHandler::bleState = WAIT;
 LinkedList<long> MainHandler::detections = LinkedList<long>();
 ControllerRGBLED* MainHandler::rgbLED = nullptr;
-ControllerLED* MainHandler::statusLED = nullptr;
+SignalHandler* MainHandler::signalHandler = nullptr;
 
-void MainHandler::setup(int GEIGER_PIN, BluetoothServer* server) {
+void MainHandler::setup(int IMP_PIN, int SGN_PIN, int R_PIN, int B_PIN, int G_PIN, BluetoothServer* server) {
 
     bluetoothServer = server;
-    rgbLED = new ControllerRGBLED(RED_LED_PIN, GREEN_LED_PIN, BLUE_LED_PIN);
-    statusLED = new ControllerLED(ON_OFF_LED_PIN);
+    rgbLED = new ControllerRGBLED(R_PIN, G_PIN, B_PIN);
+    signalHandler = new SignalHandler(SGN_PIN);
 
-    attachInterrupt(digitalPinToInterrupt(GEIGER_PIN), impulse, FALLING);
+    attachInterrupt(digitalPinToInterrupt(IMP_PIN), impulse, FALLING);
 
 }
 
 void MainHandler::loop() {
-    statusLED->loop();
+    signalHandler->loop();
     unsigned long current_ms = millis();
     if(current_ms - previous_ms > GC_LOG_PERIOD) {
         previous_ms = current_ms;
@@ -27,11 +27,11 @@ void MainHandler::loop() {
         float msvh = calculate_msvh(cpm);
 
         if(msvh < 11) {
-            rgbLED->on(false,true,false);
+            rgbLED->green();
         } else if(msvh >= 11 && msvh < 57) {
-            rgbLED->on(true, true, false);
+            rgbLED->yellow();
         } else {
-            rgbLED->on(true,false,false);
+            rgbLED->red();
         }
 
         Serial.print("CPM: ");
@@ -61,8 +61,12 @@ void MainHandler::toggle_bluetooth() {
     }
 }
 
+void MainHandler::toggle_signal() {
+    signalHandler->toggle();
+}
+
 void MainHandler::impulse() {
-    statusLED->blink(500, 1);
+    signalHandler->impulse(500, 1);
     unsigned long time = millis();
     detections.add(time);
     if(detections.size() > 999) {
