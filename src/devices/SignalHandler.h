@@ -11,7 +11,7 @@ public:
     ~SignalHandler();
 
     void loop();
-    void impulse(int interval, int times);
+    void impulse(int interval);
 
     void on();
     void off();
@@ -22,12 +22,12 @@ public:
 private:
 
     bool active;
-    bool determined;
+    bool started;
     int PIN;
     int interval;
-    int times;
-    int state;
-    unsigned long previous;
+    unsigned long last_action;
+    unsigned long start;
+    static int DELAY;
 
 };
 

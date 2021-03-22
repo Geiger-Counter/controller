@@ -62,11 +62,12 @@ void MainHandler::toggle_bluetooth() {
 }
 
 void MainHandler::toggle_signal() {
+    Serial.println("Toggle Signal");
     signalHandler->toggle();
 }
 
 void MainHandler::impulse() {
-    signalHandler->impulse(500, 1);
+    signalHandler->impulse(100);
     unsigned long time = millis();
     detections.add(time);
     if(detections.size() > 999) {

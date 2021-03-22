@@ -1,8 +1,10 @@
 #include "BluetoothServer.h"
 
+int BluetoothServer::DELAY = 1000;
+
 BluetoothServer::BluetoothServer(bool start) {
 
-    active = false;
+    this->active = false;
 
     if(start) {
         BluetoothServer::start();
@@ -11,74 +13,83 @@ BluetoothServer::BluetoothServer(bool start) {
 }
 
 void BluetoothServer::start() {
-    if(!active) {
-        Serial.print("BLE initialized: ");
-        Serial.println(BLEDevice::getInitialized());
-        BLEDevice::init("GeigerCounter BT Server");
-        Serial.println("BluetoothServer starting...");
-        server = BLEDevice::createServer();
-        serviceHandler = new ServiceCallbackHandler();
-        server->setCallbacks(serviceHandler);
-        BLEService* data_service = server->createService(DATA_SERVICE_UUID);
-        BLEService* settings_service = server->createService(SETTINGS_SERVICE_UUID);
-        build_characteristics(data_service, settings_service);
-        data_service->start();
-        settings_service->start();
-        BLEAdvertising* advertising = BLEDevice::getAdvertising();
-        advertising->addServiceUUID(DATA_SERVICE_UUID);
-        advertising->setScanResponse(true);
-        advertising->setMinPreferred(0x06);
-        advertising->setMinPreferred(0x12);
-        BLEDevice::startAdvertising();
-        Serial.println("BluetoothServer running");
-        active = true;
+    unsigned long now = millis();
+    if((now - this->last_action) > BluetoothServer::DELAY) {
+        this->last_action = now;
+        if(!this->active) {
+            Serial.print("BLE initialized: ");
+            Serial.println(BLEDevice::getInitialized());
+            BLEDevice::init("GeigerCounter BT Server");
+            Serial.println("BluetoothServer starting...");
+            this->server = BLEDevice::createServer();
+            this->serviceHandler = new ServiceCallbackHandler();
+            this->server->setCallbacks(serviceHandler);
+            BLEService* data_service = server->createService(DATA_SERVICE_UUID);
+            BLEService* settings_service = server->createService(SETTINGS_SERVICE_UUID);
+            build_characteristics(data_service, settings_service);
+            data_service->start();
+            settings_service->start();
+            BLEAdvertising* advertising = BLEDevice::getAdvertising();
+            advertising->addServiceUUID(DATA_SERVICE_UUID);
+            advertising->setScanResponse(true);
+            advertising->setMinPreferred(0x06);
+            advertising->setMinPreferred(0x12);
+            BLEDevice::startAdvertising();
+            Serial.println("BluetoothServer running");
+            this->active = true;
+        }
+        Serial.println("End");
     }
-    Serial.println("End");
+
 }
 
 void BluetoothServer::stop() {
-    if(active) {
-        Serial.println("Stopping Bluetooth Server ...");
-        BLEDevice::deinit();
-        delete server;
-        delete cpm;
-        delete msvh;
-        delete serviceHandler;
-        server = nullptr;
-        cpm = nullptr;
-        msvh = nullptr;
-        serviceHandler = nullptr;
-        active = false;
-        Serial.println("BluetoothServer stopped");
+    unsigned long now = millis();
+    if((now - this->last_action) > BluetoothServer::DELAY) {
+        this->last_action = now;
+        if(this->active) {
+            Serial.println("Stopping Bluetooth Server ...");
+            BLEDevice::deinit();
+            delete server;
+            delete cpm;
+            delete msvh;
+            delete serviceHandler;
+            this->server = nullptr;
+            this->cpm = nullptr;
+            this->msvh = nullptr;
+            this->serviceHandler = nullptr;
+            this->active = false;
+            Serial.println("BluetoothServer stopped");
+        }
     }
 }
 
 bool BluetoothServer::is_active() {
-    return active;
+    return this->active;
 }
 
 void BluetoothServer::send_data(float msvh_val, int cpm_val) {
-    if(active) {
-        if(serviceHandler->isConnected()) {
+    if(this->active) {
+        if(this->serviceHandler->isConnected()) {
             char msvh_buf[16];
             snprintf(msvh_buf, sizeof(msvh_buf), "%f", msvh_val);
-            msvh->setValue(msvh_buf);
+            this->msvh->setValue(msvh_buf);
             char cpm_buf[16];
             ltoa(cpm_val, cpm_buf, 10);
-            cpm->setValue(cpm_buf);
-            msvh->notify();
-            cpm->notify();
+            this->cpm->setValue(cpm_buf);
+            this->msvh->notify();
+            this->cpm->notify();
         }
     }
 }
 
 void BluetoothServer::decay_impulse(unsigned long timestamp) {
-    if(active) {
-        if(serviceHandler->isConnected()) {
+    if(this->active) {
+        if(this->serviceHandler->isConnected()) {
             char buff[8];
             snprintf(buff, sizeof(buff), "%l", timestamp);
-            impulse->setValue(buff);
-            impulse->notify();
+            this->impulse->setValue(buff);
+            this->impulse->notify();
         }
     }
 }
@@ -106,7 +117,7 @@ BLECharacteristic* BluetoothServer::create_ble_characteristic(struct Characteris
 }
 
 void BluetoothServer::build_characteristics(BLEService* data_service, BLEService* settings_service) {
-    cpm = create_ble_characteristic({
+    this->cpm = create_ble_characteristic({
         data_service,
         DATA_CPM_CHAR_UUID,
         DATA_CPM_DESC_UUID,
@@ -116,7 +127,7 @@ void BluetoothServer::build_characteristics(BLEService* data_service, BLEService
         false,
         true
     });
-    msvh = create_ble_characteristic({
+    this->msvh = create_ble_characteristic({
         data_service,
         DATA_MSV_CHAR_UUID,
         DATA_MSV_DESC_UUID,
@@ -126,7 +137,7 @@ void BluetoothServer::build_characteristics(BLEService* data_service, BLEService
         false,
         true
     });
-    impulse = create_ble_characteristic({
+    this->impulse = create_ble_characteristic({
         data_service,
         DATA_IMPULSE_CHAR_UUID,
         DATA_IMPULSE_DESC_UUID,

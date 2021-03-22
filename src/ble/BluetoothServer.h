@@ -52,9 +52,11 @@ private:
     ServiceCallbackHandler* serviceHandler;
     bool active;
     char* ble_code;
-
+    unsigned long last_action;
     BLECharacteristic* create_ble_characteristic(struct CharacteristicTemplate tmpl);
     void build_characteristics(BLEService* api, BLEService* settings);
+
+    static int DELAY;
 
 };
 

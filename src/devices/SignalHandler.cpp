@@ -1,8 +1,11 @@
 #include "SignalHandler.h"
 
+int SignalHandler::DELAY = 500;
+
 SignalHandler::SignalHandler(int _PIN) {
     this->PIN = _PIN;
     this->active = false;
+    this->last_action = millis();
 
     pinMode(this->PIN, OUTPUT);
 }
@@ -10,45 +13,36 @@ SignalHandler::SignalHandler(int _PIN) {
 SignalHandler::~SignalHandler() {}
 
 void SignalHandler::on() {
+    Serial.println("Show Signal");
     this->active = true;
 }
 
 void SignalHandler::off() {
+    Serial.println("Hide Signal");
     this->active = false;
 }
 
 void SignalHandler::toggle() {
-    this->active ? this->off() : this->on();
+    unsigned long now = millis();
+    if((now - this->last_action) > SignalHandler::DELAY) {
+        this->last_action = now;
+        this->active ? this->off() : this->on();
+    } 
 }
 
-void SignalHandler::impulse(int _interval = 1000, int _times = 1) {
-    this->previous = 0;
+void SignalHandler::impulse(int _interval = 1000) {
+    this->start = millis();
     this->interval = _interval;
-    this->times = _times;
-    this->state = LOW;
-    this->determined = true;
+    this->started = true;
 }
 
 void SignalHandler::loop() {
-    if(this->active && this->determined) {
-        if(this->times == 0) {
-            this->off();
-        } else {
-            unsigned long now = millis();
-            if((now - this->previous) > this->interval) {
-                this->previous = now;
-                if(this->times != -1) {
-                    this->times--;
-                }
-                if(this->state == LOW) {
-                    this->state = HIGH;
-                    this->on();
-                } else {
-                    this->state = LOW;
-                    this->off();
-                }
-            }
+    if(this->active && this->started) {
+        unsigned long now = millis();
+        if((now - this->start) > this->interval) {
+            this->started = false;
         }
+        digitalWrite(this->PIN, this->started ? HIGH : LOW);
     }
 }
 
