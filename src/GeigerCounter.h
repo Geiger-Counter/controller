@@ -5,8 +5,6 @@
 #include "./devices/ControllerDisplay.h"
 #include "MainHandler.h"
 #include "./ble/BluetoothServer.h"
-#include "./devices/ControllerButton.h"
-#include "./devices/ControllerLED.h"
 #include "./devices/ControllerRGBLED.h"
 
 /**
@@ -21,21 +19,9 @@ public:
     GeigerCounter();
     ~GeigerCounter();
 
-    void setup(int IMP_PIN, int BLE_BTN_PIN, int SGN_BTN_PIN, int SNG_PIN, int R_PIN, int G_PIN, int B_PIN);
+    void setup(int IMP_PIN, int SNG_PIN, int R_PIN, int G_PIN, int B_PIN);
     void loop();
-
-    static void execute_isr(int index);
-
-private:
-
-    ControllerButton* bleButton;
-    ControllerButton* signalButton;
-
-    static volatile unsigned long isr[3];
-    static volatile unsigned long last_action;
-    static void check_isr();
     
-
 };
 
 

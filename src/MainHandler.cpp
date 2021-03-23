@@ -3,7 +3,6 @@
 int MainHandler::cpm = 0;
 unsigned long MainHandler::previous_ms = 0;
 BluetoothServer* MainHandler::bluetoothServer = nullptr;
-ButtonState MainHandler::bleState = WAIT;
 LinkedList<long> MainHandler::detections = LinkedList<long>();
 ControllerRGBLED* MainHandler::rgbLED = nullptr;
 SignalHandler* MainHandler::signalHandler = nullptr;
@@ -40,30 +39,6 @@ void MainHandler::loop() {
         Serial.println(msvh);
         bluetoothServer->send_data(calculate_msvh(cpm), cpm);
     }
-}
-
-void MainHandler::start_bluetooth() {
-    bluetoothServer->start();
-    Serial.println("Started");
-    ControllerDisplay::showBLE();
-}
-
-void MainHandler::stop_bluetooth() {
-    bluetoothServer->stop();
-    ControllerDisplay::hideBLE();
-}
-
-void MainHandler::toggle_bluetooth() {
-    if(bluetoothServer->is_active()) {
-        stop_bluetooth();
-    } else {
-        start_bluetooth();
-    }
-}
-
-void MainHandler::toggle_signal() {
-    Serial.println("Toggle Signal");
-    signalHandler->toggle();
 }
 
 void MainHandler::impulse() {

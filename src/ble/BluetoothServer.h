@@ -34,14 +34,12 @@ class BluetoothServer
 
 public:
 
-    BluetoothServer(bool start = false);
+    BluetoothServer();
     ~BluetoothServer();
 
     void send_data(float msvh, int cpm);
     void decay_impulse(unsigned long timestamp);
     void start();
-    void stop();
-    bool is_active();
 
 private:
 
@@ -50,13 +48,9 @@ private:
     BLECharacteristic* msvh;
     BLECharacteristic* impulse;
     ServiceCallbackHandler* serviceHandler;
-    bool active;
     char* ble_code;
-    unsigned long last_action;
     BLECharacteristic* create_ble_characteristic(struct CharacteristicTemplate tmpl);
-    void build_characteristics(BLEService* api, BLEService* settings);
-
-    static int DELAY;
+    void build_characteristics(BLEService* api);
 
 };
 

@@ -13,21 +13,12 @@ public:
     void loop();
     void impulse(int interval);
 
-    void on();
-    void off();
-    void toggle();
-
-    bool is_active();
-
 private:
 
-    bool active;
     bool started;
     int PIN;
     int interval;
-    unsigned long last_action;
     unsigned long start;
-    static int DELAY;
 
 };
 

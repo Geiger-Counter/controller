@@ -13,13 +13,6 @@
 #define GC_LOG_PERIOD 5000
 #define GC_LOG_SIZE 500
 
-enum ButtonState {
-    START,
-    STOP,
-    WAIT,
-    RUNNING
-};
-
 class MainHandler {
 
 public:
@@ -29,17 +22,12 @@ public:
     static int get_counts_per_minute();
     static void loop();
     static void impulse();
-    static void start_bluetooth();
-    static void stop_bluetooth();
-    static void toggle_bluetooth();
-    static void toggle_signal();
 
 private:
 
     static int cpm;
     static unsigned long previous_ms;
     static LinkedList<long> detections;
-    static ButtonState bleState;
     static BluetoothServer* bluetoothServer;
     static ControllerRGBLED* rgbLED;
     static SignalHandler* signalHandler;

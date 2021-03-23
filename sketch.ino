@@ -1,8 +1,5 @@
 #include "./src/GeigerCounter.h"
 
-#define BLUETOOTH_BTN_PIN 5
-#define SIGNAL_TOGGLE_BTN_PIN 17
-
 #define SIGNAL_PIN 23
 #define R_PIN 19
 #define G_PIN 22
@@ -14,7 +11,7 @@ GeigerCounter app;
 
 void setup() {
 
-  app.setup(GEIGER_COUNTER_PIN, BLUETOOTH_BTN_PIN, SIGNAL_TOGGLE_BTN_PIN, SIGNAL_PIN, R_PIN, G_PIN, B_PIN);
+  app.setup(GEIGER_COUNTER_PIN, SIGNAL_PIN, R_PIN, G_PIN, B_PIN);
 }
 
 void loop() {
