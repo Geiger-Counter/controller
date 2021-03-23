@@ -16,7 +16,6 @@ void ControllerDisplay::loop()
     
 
     printBLEIcon();
-    printSGNIcon();
     printBattery();
     renderStatistics();
 
@@ -33,11 +32,6 @@ void ControllerDisplay::updateStatistic(float _msv, int _cpm)
 void ControllerDisplay::printBLEIcon() 
 {
     Heltec.display->drawXbm(2, 2, BT_width, BT_height, BT_bits);
-}
-
-void ControllerDisplay::printSGNIcon()
-{
-    Heltec.display->drawXbm(12, 2, SGN_width, SGN_height, SGN_bits);
 }
 
 void ControllerDisplay::printBattery()

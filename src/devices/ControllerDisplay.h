@@ -21,7 +21,6 @@ private:
     static int cpm;
 
     static void printBLEIcon();
-    static void printSGNIcon();
     static void printBattery();
     static void renderStatistics();
 
